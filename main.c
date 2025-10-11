@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include "admin.h" //aqui mora o cadastro de aluno
 
 //Definindo coisas
 typedef struct
