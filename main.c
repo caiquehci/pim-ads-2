@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "admin.h" //aqui mora o cadastro de aluno
+#include "menu.h" //aqui moram as opções de menu
 
 //Definindo coisas
 typedef struct
@@ -14,6 +15,7 @@ typedef struct
 void identificar_tipo(dados_usuario *u) { //u é um ponteiro que aponta para dados_usuario
     if (strstr(u->login, "@admin")) { //strstr é uma função de string.h que procura textos em textos
         strcpy(u->tipo, "admin"); //copia 'admin' e joga dentro do tipo de dados_usuario
+        run_menu(u->tipo); //
     } else if (strstr(u->login, "@professor")) {
         strcpy(u->tipo, "professor");
     } else if (strstr(u->login, "@aluno")) {
