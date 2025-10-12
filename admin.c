@@ -34,6 +34,26 @@ void cadastrar_aluno(Aluno *aluno) {
     printf("Não\n");
 }
 
+//Cadastrar professor, clássico
+void cadastrar_professor(Professor *prof) {
+    printf("Cadastro de professor: \n");
+
+    printf("Nome: ");
+    scanf(" %[^\n]",prof->nome);
+    
+    printf("CPF: ");
+    scanf(" %[^\n]",prof->cpf);
+    
+    printf("Disciplina: ");
+    scanf(" %[^\n]",prof->disciplina);
+    
+    printf("E-mail: ");
+    scanf(" %[^\n]",prof->email);
+
+    printf("Professor cadastrado:\n");
+    printf("Nome: %s\nCPF: %s\nDisciplina: %s\nE-mail: %s\n",prof->nome, prof->cpf, prof->disciplina, prof->email);
+}
+
 //Alterar status do aluno
 void alterar_status_aluno(Aluno *aluno, const char *novo_status) {
     //pelo visto tem que ser ponteiro pq senão recebe cópia e não o valor vigente

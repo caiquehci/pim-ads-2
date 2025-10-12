@@ -1,6 +1,7 @@
 #ifndef ADMIN_H
 #define ADMIN_H
 
+//Estrutura de aluno
 typedef struct { //Todas as infos são declaradas aqui, mesmo que não sejam utilizadas em todas as funções. Bom que centraliza tudo
     char nome[100];
     char endereco[200];
@@ -11,9 +12,20 @@ typedef struct { //Todas as infos são declaradas aqui, mesmo que não sejam uti
     int possui_pendencias; //1 para sim, 0 para não
 } Aluno;
 
+//Estrutura de professor
+typedef struct {
+    char nome[100];
+    char cpf[15];
+    char disciplina[50];
+    char email[100];
+} Professor;
 
-//função de cadastro de alunos no sistema
+//funções de cadastro no sistema
+////Aluno
 void cadastrar_aluno(Aluno *aluno);
 void alterar_status_aluno(Aluno *aluno, const char *novo_status);
+
+////Professor
+void cadastrar_professor(Professor *prof);
 
 #endif
