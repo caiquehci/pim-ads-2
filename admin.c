@@ -2,8 +2,12 @@
 #include <string.h>
 #include "admin.h"
 
+extern int proximo_id; 
+
 //Cadastrar aluno, clássico
 void cadastrar_aluno(Aluno *aluno) {
+    aluno->id = proximo_id++;
+
     strcpy(aluno->status, "ativo"); //Começa como ativo
     aluno->possui_pendencias = 0; //Começa sem pendências
 
@@ -32,6 +36,10 @@ void cadastrar_aluno(Aluno *aluno) {
             printf("Sim\n");
         else
     printf("Não\n");
+
+    char nome_arquivo[50];
+    sprintf(nome_arquivo, "aluno_%d.txt", aluno->id);
+    arquivo_aluno(aluno, nome_arquivo);
 }
 
 //Cadastrar professor, clássico
@@ -65,4 +73,27 @@ void alterar_status_aluno(Aluno *aluno, const char *novo_status) {
     aluno->status[sizeof(aluno->status) -1] = '\0';
 
     printf("Status do aluno alterado para: %s\n",aluno->status);
+}
+
+//Criar arquivo do aluno
+void arquivo_aluno(const Aluno *aluno, const char *alunosss) {
+    FILE *fp = fopen(alunosss, "w");
+    if (fp == NULL ) {
+        printf("Erro ao abrir o arquivo.\n");
+        return;
+    }
+    fprintf(fp, "ID: %d\n", aluno->id);
+    fprintf(fp, "Nome: %s\n", aluno->nome);
+    fprintf(fp, "Endereco: %s\n", aluno->endereco);
+    fprintf(fp, "CPF: %s\n", aluno->cpf);
+    fprintf(fp, "Data de nascimento: %s\n", aluno->data_nascimento);
+    fprintf(fp, "Turma: %s\n", aluno->turma);
+    fprintf(fp, "Status: %s\n", aluno->status);
+    fprintf(fp, "Possui pendencias: %s\n", aluno->possui_pendencias ? "Sim" : "Nao");
+    fprintf(fp, "Faltas: %d\n", aluno->faltas);
+    fprintf(fp, "Nota: %.2f\n", aluno->nota);
+
+    fclose(fp);
+
+    printf("Dados do aluno salvos em '%s'.\n", alunosss);
 }

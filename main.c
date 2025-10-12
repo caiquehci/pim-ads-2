@@ -4,6 +4,9 @@
 #include "menu.h" //aqui moram as opções de menu
 
 //Definindo coisas
+
+int proximo_id = 1; //ID do aluno
+
 typedef struct
 {
     char login[50];     //guarda login
@@ -15,8 +18,7 @@ typedef struct
 void identificar_tipo(dados_usuario *u) { //u é um ponteiro que aponta para dados_usuario
     if (strstr(u->login, "@admin")) { //strstr é uma função de string.h que procura textos em textos
         strcpy(u->tipo, "admin"); //copia 'admin' e joga dentro do tipo de dados_usuario
-        run_menu(u->tipo); //
-    } else if (strstr(u->login, "@professor")) {
+     } else if (strstr(u->login, "@professor")) {
         strcpy(u->tipo, "professor");
     } else if (strstr(u->login, "@aluno")) {
         strcpy(u->tipo, "aluno");
@@ -54,5 +56,7 @@ int main(){
         printf("Bem-vindo, Aluno!\n");
     }   else {
         printf("Login inválido. Tente novamente.\n");
+        return 1;
     }
+    run_menu(usuarioAtual.tipo); //como tá na main, vamos sem ponteiro
 }

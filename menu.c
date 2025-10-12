@@ -49,8 +49,19 @@ void menu_admin() {
         } while (opcao != 0);
 }
 
+//Depois eu volto aqui. Primeiro ele tem que poder escolher o aluno
+
 void menu_professor() {
+    int opcao; 
     printf("Menu [P] - Opções de gerência de alunos.\n");
+    printf("Escolha uma das opções abaixo para continuar:\n");
+    printf("1 - Adicionar nota\n");
+    printf("2 - Incluir faltas\n");
+    printf("3 - Cadastrar professor\n");
+    printf("0 - Sair\n");
+    printf("Sua opção:\n");
+    scanf("%d",&opcao);
+    getchar(); //em teoria limpa o \n, mas sem isso não vai
 }
 
 void menu_aluno() {
