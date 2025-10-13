@@ -40,8 +40,6 @@ void login(dados_usuario *u) {
     identificar_tipo(u); //ao final de login, usamos a função de ver o tipo do user
 }
 
-
-
 int main(){
     dados_usuario usuarioAtual; //essa aqui guarda os dados da função
     login(&usuarioAtual); //chamei a função login que vai mexer na variável recém declarada

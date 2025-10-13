@@ -1,0 +1,30 @@
+ID: 1
+Nome: Carlos Henrique Machado Castanheira Junior
+Endereco: Rua Heitor de Andrade 418
+CPF: 43717451804
+Data de nascimento: 04/08/1994
+Turma: C
+Status: ativo
+Possui pendencias: Nao
+Faltas: 0
+Nota: 0.00
+ID: 2
+Nome: Alineanne Henrique Castanheira
+Endereco: Rua Heitor de Andrade 418
+CPF: 43717451804
+Data de nascimento: 04/08/1994
+Turma: A
+Status: ativo
+Possui pendencias: Nao
+Faltas: 0
+Nota: 0.00
+ID: 3
+Nome: Daniel Henrique Machado Castanheira
+Endereco: Rua Heitor de Andrade 418
+CPF: 43717451804
+Data de nascimento: 14/07/1999
+Turma: D
+Status: ativo
+Possui pendencias: Nao
+Faltas: 0
+Nota: 0.00

@@ -11,6 +11,9 @@ void cadastrar_aluno(Aluno *aluno) {
     strcpy(aluno->status, "ativo"); //Começa como ativo
     aluno->possui_pendencias = 0; //Começa sem pendências
 
+    aluno->faltas = 0;//tava dando -8927392873 faltas no .txt
+    aluno->nota = 0.0f;//mesma coisa ↑
+
     printf("Cadastre um novo aluno\n");
 
     printf("Nome: ");
@@ -38,8 +41,9 @@ void cadastrar_aluno(Aluno *aluno) {
     printf("Não\n");
 
     char nome_arquivo[50];
-    sprintf(nome_arquivo, "aluno_%d.txt", aluno->id);
-    arquivo_aluno(aluno, nome_arquivo);
+//    sprintf(nome_arquivo, "aluno_%d.txt", aluno->id);
+//isso era pra fazer um arquivo por aluno
+    arquivo_aluno(aluno, "alunos.txt");
 }
 
 //Cadastrar professor, clássico
@@ -77,7 +81,7 @@ void alterar_status_aluno(Aluno *aluno, const char *novo_status) {
 
 //Criar arquivo do aluno
 void arquivo_aluno(const Aluno *aluno, const char *alunosss) {
-    FILE *fp = fopen(alunosss, "w");
+    FILE *fp = fopen(alunosss, "a");// de w pra a, de write para append
     if (fp == NULL ) {
         printf("Erro ao abrir o arquivo.\n");
         return;
