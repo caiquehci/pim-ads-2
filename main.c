@@ -41,6 +41,7 @@ void login(dados_usuario *u) {
 }
 
 int main(){
+    total_alunos = ler_alunos_de_arquivo(alunos, MAX_ALUNOS);
     dados_usuario usuarioAtual; //essa aqui guarda os dados da função
     login(&usuarioAtual); //chamei a função login que vai mexer na variável recém declarada
 

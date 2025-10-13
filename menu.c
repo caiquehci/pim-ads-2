@@ -25,7 +25,6 @@ void menu_admin() {
             printf("1 - Cadastrar aluno\n");
             printf("2 - Alterar status do aluno\n");
             printf("3 - Cadastrar professor\n");
-            printf("4 - Adicionar outro aluno\n");
             printf("0 - Sair\n");
             printf("Sua opção:\n");
             scanf("%d",&opcao);
@@ -36,20 +35,12 @@ void menu_admin() {
                     cadastrar_aluno(&aluno);
                     break;
                 case 2:
-                    alterar_status_aluno(&aluno, "inativo");
+//                  alterar_status_aluno(&aluno, "inativo");
+                    alterar_status_aluno_por_id();
                     break;
                 case 3:
                     cadastrar_professor(&prof);
-                    break;
-                case 4:
-                    do {
-                        cadastrar_aluno(&aluno); //ou Aluno *aluno
-                        printf("Adicionar mais um aluno?\n");
-                        printf("[1 - SIM] [0 - NÃO]");
-                        scanf("%d",&opcao);
-                        getchar();
-                    }   while(opcao == 1);
-                    break;                    
+                    break;         
                 case 0:
                     printf("Saindo...\n");
                     break;

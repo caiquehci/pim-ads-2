@@ -1,6 +1,10 @@
 #ifndef ADMIN_H
 #define ADMIN_H
 
+#define MAX_ALUNOS 100
+
+extern int total_alunos;
+
 //Estrutura de aluno
 typedef struct { //Todas as infos são declaradas aqui, mesmo que não sejam utilizadas em todas as funções. Bom que centraliza tudo
     int id;
@@ -17,6 +21,8 @@ typedef struct { //Todas as infos são declaradas aqui, mesmo que não sejam uti
     float nota; 
 } Aluno;
 
+extern Aluno alunos[MAX_ALUNOS];
+
 //Estrutura de professor
 typedef struct {
     char nome[100];
@@ -29,8 +35,12 @@ typedef struct {
 ////Aluno
 void cadastrar_aluno(Aluno *aluno);
 void alterar_status_aluno(Aluno *aluno, const char *novo_status);
+void alterar_status_aluno_por_id(void);
+int buscar_aluno_por_id(int id);
+int ler_alunos_de_arquivo(Aluno alunos[], int max_alunos);
 
 void arquivo_aluno(const Aluno *aluno, const char *nome_arquivo);
+void salvar_alunos_em_arquivo(void);
 
 ////Professor
 void cadastrar_professor(Professor *prof);

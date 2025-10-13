@@ -3,6 +3,8 @@
 #include "admin.h"
 
 extern int proximo_id; 
+Aluno alunos[MAX_ALUNOS];
+int total_alunos = 0;
 
 //Cadastrar aluno, clássico
 void cadastrar_aluno(Aluno *aluno) {
@@ -66,6 +68,97 @@ void cadastrar_professor(Professor *prof) {
     printf("Nome: %s\nCPF: %s\nDisciplina: %s\nE-mail: %s\n",prof->nome, prof->cpf, prof->disciplina, prof->email);
 }
 
+//Ler arquivos de aluno
+int ler_alunos_de_arquivo(Aluno alunos[], int max_alunos) {
+    FILE *fp = fopen("alunos.txt", "r");
+    if (!fp) {
+        perror("Erro ao abrir arquivo alunos.txt");
+        return 0;
+    }
+
+    int i = 0;
+    char linha[256];
+    while (i < max_alunos && !feof(fp)) {
+        if (fgets(linha, sizeof(linha), fp) == NULL) break;
+
+        if (sscanf(linha, "ID: %d", &alunos[i].id) == 1) {
+            // Leia os demais campos, linha a linha
+
+            fgets(linha, sizeof(linha), fp);
+            sscanf(linha, "Nome: %[^\n]", alunos[i].nome);
+
+            fgets(linha, sizeof(linha), fp);
+            sscanf(linha, "Endereco: %[^\n]", alunos[i].endereco);
+
+            fgets(linha, sizeof(linha), fp);
+            sscanf(linha, "CPF: %[^\n]", alunos[i].cpf);
+
+            fgets(linha, sizeof(linha), fp);
+            sscanf(linha, "Data de nascimento: %[^\n]", alunos[i].data_nascimento);
+
+            fgets(linha, sizeof(linha), fp);
+            sscanf(linha, "Turma: %s", alunos[i].turma);
+
+            fgets(linha, sizeof(linha), fp);
+            sscanf(linha, "Status: %s", alunos[i].status);
+
+            fgets(linha, sizeof(linha), fp);
+            char pend[4];
+            sscanf(linha, "Possui pendencias: %s", pend);
+            alunos[i].possui_pendencias = (strcmp(pend, "Sim") == 0);
+
+            fgets(linha, sizeof(linha), fp);
+            sscanf(linha, "Faltas: %d", &alunos[i].faltas);
+
+            fgets(linha, sizeof(linha), fp);
+            sscanf(linha, "Nota: %f", &alunos[i].nota);
+
+            // Pular o separador
+            fgets(linha, sizeof(linha), fp);
+
+            i++;
+        }
+    }
+
+    fclose(fp);
+    return i; // quantidade de alunos lidos
+}
+
+//Buscar aluno por id
+int buscar_aluno_por_id(int id) {
+    for (int i = 0; i < total_alunos; i++) {
+        if (alunos[i].id == id) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+//Buscar aluno e alterar status pelo seu id
+void alterar_status_aluno_por_id() {
+    int id;
+    char novo_status[10];
+
+    printf("Digite o ID do aluno: ");
+    scanf("%d",&id);
+    getchar();
+
+    int idx = buscar_aluno_por_id(id);
+
+    if (idx == -1) {
+        printf("Aluno não encontrado.\n");
+        return;
+    }
+
+    printf("Novos status: ");
+    scanf("%9s", novo_status);
+    getchar();
+
+    alterar_status_aluno(&alunos[idx], novo_status);
+
+    salvar_alunos_em_arquivo();
+}
+
 //Alterar status do aluno
 void alterar_status_aluno(Aluno *aluno, const char *novo_status) {
     //pelo visto tem que ser ponteiro pq senão recebe cópia e não o valor vigente
@@ -100,4 +193,27 @@ void arquivo_aluno(const Aluno *aluno, const char *alunosss) {
     fclose(fp);
 
     printf("Dados do aluno salvos em '%s'.\n", alunosss);
+}
+
+//Salvar status novos no arquivo
+void salvar_alunos_em_arquivo(void) {
+    FILE *fp = fopen("alunos.txt", "w");
+    if (!fp) {
+        perror("Erro ao abrir arquivo para salvar");
+        return;
+    }
+    for (int i = 0; i < total_alunos; i++) {
+        fprintf(fp, "ID: %d\n", alunos[i].id);
+        fprintf(fp, "Nome: %s\n", alunos[i].nome);
+        fprintf(fp, "Endereco: %s\n", alunos[i].endereco);
+        fprintf(fp, "CPF: %s\n", alunos[i].cpf);
+        fprintf(fp, "Data de nascimento: %s\n", alunos[i].data_nascimento);
+        fprintf(fp, "Turma: %s\n", alunos[i].turma);
+        fprintf(fp, "Status: %s\n", alunos[i].status);
+        fprintf(fp, "Possui pendencias: %s\n", alunos[i].possui_pendencias ? "Sim" : "Nao");
+        fprintf(fp, "Faltas: %d\n", alunos[i].faltas);
+        fprintf(fp, "Nota: %.2f\n", alunos[i].nota);
+        fprintf(fp, "------------------------------\n");
+    }
+    fclose(fp);
 }
