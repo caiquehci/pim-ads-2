@@ -5,68 +5,92 @@
 extern int proximo_id; 
 Aluno alunos[MAX_ALUNOS];
 int total_alunos = 0;
+Turma lista_turmas[MAX_TURMAS];
+int num_turmas = 0;
 
-//Cadastrar aluno, clássico
-void cadastrar_aluno(Aluno *aluno) {
-    aluno->id = proximo_id++;
+//Cadastrar turma
+void cadastrar_turma(Turma *turma){
+    printf("Cadastre uma nova turma\n");
 
-    strcpy(aluno->status, "ativo"); //Começa como ativo
-    aluno->possui_pendencias = 0; //Começa sem pendências
+    printf("Série (número do ano): ");
+    scanf(" %[^\n]",turma->serie);
 
-    aluno->faltas = 0;//tava dando -8927392873 faltas no .txt
-    aluno->nota = 0.0f;//mesma coisa ↑
+    printf("Letra da turma [A-Z]: ");
+    scanf(" %c",&turma->letra);
 
-    printf("Cadastre um novo aluno\n");
+    printf("Professor responsável: ")/
+    scanf(" %[^\n]",turma->nome_professor);
 
-    printf("Nome: ");
-    scanf(" %[^\n]",aluno->nome); //ler com espaço até ENTER
-
-    printf("Endereço: ");
-    scanf(" %[^\n]",aluno->endereco);
-
-    printf("CPF: ");
-    scanf(" %[^\n]",aluno->cpf);
-    
-    printf("Data de nascimento (DD/MM/AAAA): ");
-    scanf(" %[^\n]",aluno->data_nascimento);
-
-    printf("Turma [A/B/C/D/E]: ");
-    scanf(" %[^\n]",aluno->turma);
-
-    printf("\nAluno cadastrado:\n");
-    printf("Nome: %s\nEndereço: %s\nCPF: %s\nData de nascimento: %s\nTurma: %s\n",aluno->nome,aluno->endereco,aluno->cpf,aluno->data_nascimento,aluno->turma);
-
-    printf("Status: %s\nPossui pendências: ", aluno->status);
-        if (aluno->possui_pendencias) 
-            printf("Sim\n");
-        else
-    printf("Não\n");
-
-    char nome_arquivo[50];
-//    sprintf(nome_arquivo, "aluno_%d.txt", aluno->id);
-//isso era pra fazer um arquivo por aluno
-    arquivo_aluno(aluno, "alunos.txt");
+    printf("\nTurma cadastrada:\n");
+    printf("Série: %s\n",turma->serie);
+    printf("Letra: %c\n",turma->letra);
+    printf("Professor responsável: %s\n",turma->nome_professor);
 }
 
-//Cadastrar professor, clássico
-void cadastrar_professor(Professor *prof) {
-    printf("Cadastro de professor: \n");
-
-    printf("Nome: ");
-    scanf(" %[^\n]",prof->nome);
-    
-    printf("CPF: ");
-    scanf(" %[^\n]",prof->cpf);
-    
-    printf("Disciplina: ");
-    scanf(" %[^\n]",prof->disciplina);
-    
-    printf("E-mail: ");
-    scanf(" %[^\n]",prof->email);
-
-    printf("Professor cadastrado:\n");
-    printf("Nome: %s\nCPF: %s\nDisciplina: %s\nE-mail: %s\n",prof->nome, prof->cpf, prof->disciplina, prof->email);
+//Adicionar uma nova turma
+void adicionar_turma(Turma *turma){
+    if (num_turmas < MAX_TURMAS){
+        lista_turmas[num_turmas] = *turma;
+        num_turmas++;
+    } else {
+        printf("Não podemos acrescentar mais turmas.\n");
+    }
 }
+
+//Ver turmas
+void mostrar_turmas(void){
+    if (num_turmas == 0){
+        printf("Sem turmas até agora.\n");
+        printf("Vamos cadastrar a primeira\n.");
+
+        Turma nova_turma;
+        cadastrar_turma(&nova_turma);
+        adicionar_turma(&nova_turma);
+    } else {
+        printf("Lista de turmas:\n");
+        for (int i = 0; i<num_turmas; i++) {
+            printf("%d - %sª Série, Turma: %c. Professor responsável: %s\n", i+1, lista_turmas[i].serie, lista_turmas[i].letra,lista_turmas[i].nome_professor);
+        }
+    }
+}
+
+//Excluir turmas
+void excluir_turmas(void){
+    if (num_turmas == 0){
+        printf("Nenhuma turma para excluir.\n");
+        return;
+    }
+
+    mostrar_turmas();
+
+    int escolha;
+    printf("Digite o número da turma que deseja excluir (0 para desistir): ");
+    scanf("%d",&escolha);
+    getchar();//novamente a lenda aparece e eu n entendo a motivação
+
+    if (escolha == 0){
+        printf("Exclusão cancelada.\n");
+        return;
+    }
+
+    int indice = escolha - 1;
+    if (indice <0 || indice >= num_turmas){
+        printf("Número inválido. Não excluímos nada.\n");
+        return;
+    }
+
+    for (int i = indice; i < num_turmas - 1; i++){
+        lista_turmas[i] = lista_turmas[i+1];
+    }
+
+    num_turmas--;
+
+    printf("Turma excluída.\n");
+
+    mostrar_turmas();
+}
+
+
 
 //Ler arquivos de aluno
 int ler_alunos_de_arquivo(Aluno alunos[], int max_alunos) {
@@ -124,6 +148,73 @@ int ler_alunos_de_arquivo(Aluno alunos[], int max_alunos) {
     return i; // quantidade de alunos lidos
 }
 
+//Cadastrar aluno, clássico
+void cadastrar_aluno(Aluno *aluno) {
+    aluno->id = proximo_id++;
+
+    strcpy(aluno->status, "ativo"); //Começa como ativo
+    aluno->possui_pendencias = 0; //Começa sem pendências
+
+    aluno->faltas = 0;//tava dando -8927392873 faltas no .txt
+    aluno->nota = 0.0f;//mesma coisa ↑
+
+    printf("Cadastre um novo aluno\n");
+
+    printf("Nome: ");
+    scanf(" %[^\n]",aluno->nome); //ler com espaço até ENTER
+
+    printf("Endereço: ");
+    scanf(" %[^\n]",aluno->endereco);
+
+    printf("CPF: ");
+    scanf(" %[^\n]",aluno->cpf);
+    
+    printf("Data de nascimento (DD/MM/AAAA): ");
+    scanf(" %[^\n]",aluno->data_nascimento);
+
+    printf("Turma [A/B/C/D/E]: ");
+    scanf(" %[^\n]",aluno->turma);
+
+    printf("\nAluno cadastrado:\n");
+    printf("Nome: %s\nEndereço: %s\nCPF: %s\nData de nascimento: %s\nTurma: %s\n",aluno->nome,aluno->endereco,aluno->cpf,aluno->data_nascimento,aluno->turma);
+
+    printf("Status: %s\nPossui pendências: ", aluno->status);
+        if (aluno->possui_pendencias) 
+            printf("Sim\n");
+        else
+    printf("Não\n");
+
+    char nome_arquivo[50];
+//    sprintf(nome_arquivo, "aluno_%d.txt", aluno->id);
+//isso era pra fazer um arquivo por aluno
+    arquivo_aluno(aluno, "alunos.txt");
+}
+
+
+
+//Cadastrar professor, clássico
+void cadastrar_professor(Professor *prof) {
+    printf("Cadastro de professor: \n");
+
+    printf("Nome: ");
+    scanf(" %[^\n]",prof->nome);
+    
+    printf("CPF: ");
+    scanf(" %[^\n]",prof->cpf);
+    
+    printf("Disciplina: ");
+    scanf(" %[^\n]",prof->disciplina);
+    
+    printf("E-mail: ");
+    scanf(" %[^\n]",prof->email);
+
+    printf("Professor cadastrado:\n");
+    printf("Nome: %s\nCPF: %s\nDisciplina: %s\nE-mail: %s\n",prof->nome, prof->cpf, prof->disciplina, prof->email);
+}
+
+
+
+//Complexos
 //Buscar aluno por id
 int buscar_aluno_por_id(int id) {
     for (int i = 0; i < total_alunos; i++) {

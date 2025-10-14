@@ -19,12 +19,16 @@ void menu_admin() {
     int opcao;
     Aluno aluno;
     Professor prof;
+    Turma nova_turma;
         do {
             printf("Menu [A] - Opções de alto nível de gerenciamento.\n");
             printf("Escolha uma das opções abaixo para continuar:\n");
             printf("1 - Cadastrar aluno\n");
             printf("2 - Alterar status do aluno\n");
             printf("3 - Cadastrar professor\n");
+            printf("4 - Cadastrar turma\n");
+            printf("5 - Ver turmas cadastradas\n");
+            printf("6 - Excluir turmas\n");
             printf("0 - Sair\n");
             printf("Sua opção:\n");
             scanf("%d",&opcao);
@@ -40,7 +44,17 @@ void menu_admin() {
                     break;
                 case 3:
                     cadastrar_professor(&prof);
-                    break;         
+                    break;
+                case 4:
+                    cadastrar_turma(&nova_turma);
+                    adicionar_turma(&nova_turma);
+                    break;
+                case 5:
+                    mostrar_turmas();
+                    break;
+                case 6:
+                    excluir_turmas();
+                    break;
                 case 0:
                     printf("Saindo...\n");
                     break;

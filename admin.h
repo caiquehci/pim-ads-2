@@ -2,7 +2,9 @@
 #define ADMIN_H
 
 #define MAX_ALUNOS 100
+#define MAX_TURMAS 100
 
+extern int num_turmas;
 extern int total_alunos;
 
 //Estrutura de aluno
@@ -31,7 +33,22 @@ typedef struct {
     char email[100];
 } Professor;
 
+//Estrutura de turma
+typedef struct {
+    char serie[2]; // Exemplo: "1", "2" ... "N" (número do ano)
+    char letra; // Letra da turma, de 'A' a 'Z'
+    char nome_professor[100]; // Nome do professor responsável
+} Turma;
+
+extern Turma lista_turmas[MAX_TURMAS];
+
 //funções de cadastro no sistema
+//Turma
+void cadastrar_turma(Turma *turma);
+void adicionar_turma(Turma *turma);
+void mostrar_turmas(void);
+void excluir_turmas(void);
+
 ////Aluno
 void cadastrar_aluno(Aluno *aluno);
 void alterar_status_aluno(Aluno *aluno, const char *novo_status);
