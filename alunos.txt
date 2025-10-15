@@ -1,11 +1,11 @@
 ID: 1
-Nome: 
-Endereco: 
-CPF: 
-Data de nascimento: 
-Turma: 
-Status: inativo
+Nome: Carlos
+Endereco: Rua heitor
+CPF: 43717451804
+Data de nascimento: 04/08/1994
+Turma: C
+Status: ativo
 Possui pendencias: Nao
 Faltas: 0
-Nota: 0.00
+Notas: -12.50 4.00 12.00 -4.20
 ------------------------------

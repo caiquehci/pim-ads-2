@@ -20,7 +20,7 @@ typedef struct { //Todas as infos são declaradas aqui, mesmo que não sejam uti
     int possui_pendencias; //1 para sim, 0 para não
 
     int faltas;
-    float nota; 
+    float notas[4];  
 } Aluno;
 
 extern Aluno alunos[MAX_ALUNOS];

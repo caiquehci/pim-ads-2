@@ -2,6 +2,7 @@
 #include <string.h>
 #include "admin.h"
 #include "menu.h"
+#include "prof.h"
 
 void run_menu(const char *tipo_usuario) {
     if (strcmp(tipo_usuario, "admin") == 0) {
@@ -68,15 +69,28 @@ void menu_admin() {
 
 void menu_professor() {
     int opcao; 
-    printf("Menu [P] - Opções de gerência de alunos.\n");
-    printf("Escolha uma das opções abaixo para continuar:\n");
-    printf("1 - Adicionar nota\n");
-    printf("2 - Incluir faltas\n");
-    printf("3 - Cadastrar professor\n");
-    printf("0 - Sair\n");
-    printf("Sua opção:\n");
-    scanf("%d",&opcao);
-    getchar(); //em teoria limpa o \n, mas sem isso não vai
+
+    do {
+        printf("Menu [P] - Opções de gerência de alunos.\n");
+        printf("Escolha uma das opções abaixo para continuar:\n");
+        printf("1 - Atribuir notas a um aluno\n");
+        printf("2 - Incluir faltas\n");
+        printf("0 - Sair\n");
+        printf("Sua opção:\n");
+        scanf("%d",&opcao);
+        getchar(); //em teoria limpa o \n, mas sem isso não vai
+
+    switch(opcao){
+        case 1:
+            atribuir_notas(alunos, total_alunos);
+            break;
+        case 0:
+            printf("Voltando ao menu anterior...\n");
+            break;
+        default:
+            printf("Opção inválida.\n");
+        }
+    } while(opcao !=0);
 }
 
 void menu_aluno() {

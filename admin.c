@@ -135,7 +135,7 @@ int ler_alunos_de_arquivo(Aluno alunos[], int max_alunos) {
             sscanf(linha, "Faltas: %d", &alunos[i].faltas);
 
             fgets(linha, sizeof(linha), fp);
-            sscanf(linha, "Nota: %f", &alunos[i].nota);
+            sscanf(linha, "Notas: %f %f %f %f ", &alunos[i].notas[0], &alunos[i].notas[1], &alunos[i].notas[2], &alunos[i].notas[3]);
 
             // Pular o separador
             fgets(linha, sizeof(linha), fp);
@@ -156,7 +156,9 @@ void cadastrar_aluno(Aluno *aluno) {
     aluno->possui_pendencias = 0; //Começa sem pendências
 
     aluno->faltas = 0;//tava dando -8927392873 faltas no .txt
-    aluno->nota = 0.0f;//mesma coisa ↑
+    for (int i = 0; i < 4; i++){
+        aluno->notas[i] = 0.0f;//mesma coisa ↑
+    } //antes era uma nota com valor fixo pra não ser lixo, agora são
 
     printf("Cadastre um novo aluno\n");
 
@@ -279,7 +281,7 @@ void arquivo_aluno(const Aluno *aluno, const char *alunosss) {
     fprintf(fp, "Status: %s\n", aluno->status);
     fprintf(fp, "Possui pendencias: %s\n", aluno->possui_pendencias ? "Sim" : "Nao");
     fprintf(fp, "Faltas: %d\n", aluno->faltas);
-    fprintf(fp, "Nota: %.2f\n", aluno->nota);
+    fprintf(fp, "Notas: %.2f %.2f %.2f %.2f\n", aluno->notas[0],aluno->notas[1],aluno->notas[2],aluno->notas[3]);
 
     fclose(fp);
 
@@ -303,7 +305,7 @@ void salvar_alunos_em_arquivo(void) {
         fprintf(fp, "Status: %s\n", alunos[i].status);
         fprintf(fp, "Possui pendencias: %s\n", alunos[i].possui_pendencias ? "Sim" : "Nao");
         fprintf(fp, "Faltas: %d\n", alunos[i].faltas);
-        fprintf(fp, "Nota: %.2f\n", alunos[i].nota);
+        fprintf(fp, "Notas: %.2f %.2f %.2f %.2f\n", alunos[i].notas[0], alunos[i].notas[1], alunos[i].notas[2], alunos[i].notas[3]);
         fprintf(fp, "------------------------------\n");
     }
     fclose(fp);
