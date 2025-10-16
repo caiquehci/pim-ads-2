@@ -44,19 +44,43 @@ int main(){
     total_alunos = ler_alunos_de_arquivo(alunos, MAX_ALUNOS);
 
     dados_usuario usuarioAtual; //essa aqui guarda os dados da função
-    login(&usuarioAtual); //chamei a função login que vai mexer na variável recém declarada
+    int sair_sistema = 0;
 
-    //com o tipo definido em função, user detectado, vamos mostrar coisas diferentes 
+    while (!sair_sistema) {
+        login(&usuarioAtual); //chamei a função login que vai mexer na variável recém declarada
 
-    if (strcmp(usuarioAtual.tipo, "admin") == 0) {
-        printf("Bem-vindo, Administrador!\n");
-    }   else if (strcmp(usuarioAtual.tipo, "professor") == 0) {
-        printf("Bem-vindo, Professor!\n");
-    }   else if (strcmp(usuarioAtual.tipo, "aluno") == 0) {
-        printf("Bem-vindo, Aluno!\n");
-    }   else {
-        printf("Login inválido. Tente novamente.\n");
-        return 1;
+        //com o tipo definido em função, user detectado, vamos mostrar coisas diferentes 
+
+        if (strcmp(usuarioAtual.tipo, "admin") == 0) {
+            printf("Bem-vindo, Administrador!\n");
+        }   else if (strcmp(usuarioAtual.tipo, "professor") == 0) {
+                printf("Bem-vindo, Professor!\n");
+        }   else if (strcmp(usuarioAtual.tipo, "aluno") == 0) {
+                printf("Bem-vindo, Aluno!\n");
+        }   else {
+                printf("Login inválido. Tente novamente.\n");
+                continue;
+        }
+        
+        run_menu(usuarioAtual.tipo); //como tá na main, vamos sem ponteiro
+
+        //pós-logout
+        printf("\nDigite:\n1 - Logout (trocar usuário)\n0 - Sair\nOpção: ");
+        int opcao;
+        scanf("%d", &opcao);
+        getchar();
+
+        if (opcao == 0) {
+            printf("Saindo...\n");
+            sair_sistema = 1;
+        } else if (opcao == 1) {
+            printf("Logout efetuado. Faça login com outro usuário.\n\n");
+        } else {
+            printf("Opção inválida. Saindo do sistema.\n");
+            sair_sistema = 1;
+        }
     }
-    run_menu(usuarioAtual.tipo); //como tá na main, vamos sem ponteiro
+
+    return 0;
+
 }

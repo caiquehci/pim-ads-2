@@ -4,8 +4,8 @@ Endereco: Rua heitor
 CPF: 43717451804
 Data de nascimento: 04/08/1994
 Turma: C
-Status: ativo
+Status: inativo
 Possui pendencias: Nao
 Faltas: 0
-Notas: -12.50 4.00 12.00 -4.20
+Notas: 4.00 4.00 9.00 4.00
 ------------------------------
