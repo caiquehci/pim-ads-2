@@ -3,6 +3,7 @@
 
 #define MAX_ALUNOS 100
 #define MAX_TURMAS 100
+#define MAX_PROFESSORES 100
 
 extern int num_turmas;
 extern int total_alunos;
@@ -33,6 +34,9 @@ typedef struct {
     char email[100];
 } Professor;
 
+extern Professor professores[MAX_PROFESSORES];
+extern int total_professores; 
+
 //Estrutura de turma
 typedef struct {
     char serie[2]; // Exemplo: "1", "2" ... "N" (número do ano)
@@ -61,5 +65,12 @@ void salvar_alunos_em_arquivo(void);
 
 ////Professor
 void cadastrar_professor(Professor *prof);
+void adicionar_professor(Professor *prof);
+void listar_professores(void);
+void excluir_professor(void);
+void arquivo_professor(const Professor *prof);
+void salvar_professores_em_arquivo(void);
+int carregar_professores_de_arquivo(void);
+
 
 #endif

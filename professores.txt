@@ -1,0 +1,10 @@
+Nome: Ot†vio lima
+CPF: 12
+Disciplina: CS1.6
+Email: ottahbl@yahoo.com.br
+--------------
+Nome: Jo∆o "Caja" V°tor
+CPF: 12
+Disciplina: taylor swift
+Email: taylor_22_swift@swifter.com
+--------------

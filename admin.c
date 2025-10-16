@@ -2,11 +2,16 @@
 #include <string.h>
 #include "admin.h"
 
-extern int proximo_id; 
+extern int proximo_id;
+
 Aluno alunos[MAX_ALUNOS];
 int total_alunos = 0;
+
 Turma lista_turmas[MAX_TURMAS];
 int num_turmas = 0;
+
+Professor professores[MAX_PROFESSORES];
+int total_professores = 0;
 
 //Cadastrar turma
 void cadastrar_turma(Turma *turma){
@@ -214,7 +219,97 @@ void cadastrar_professor(Professor *prof) {
     printf("Nome: %s\nCPF: %s\nDisciplina: %s\nE-mail: %s\n",prof->nome, prof->cpf, prof->disciplina, prof->email);
 }
 
+//Adicionar professor
+void adicionar_professor(Professor *prof) {
+    if (total_professores >= MAX_PROFESSORES) {
+        printf("Limite máximo de professores.\n");
+        return;
+    }
 
+    professores[total_professores++] = *prof;
+    salvar_alunos_em_arquivo();
+}
+
+//Listar professores
+void listar_professores(void) {
+    if (total_professores == 0) {
+        printf("Nenhum professor cadastrado.\n");
+        return;
+    }
+
+    printf("\nLista de professores cadastrados:\n");
+    for (int i = 0; i < total_professores; i++) {
+        printf("%d - %s | %s | %s | %s \n", i+1, professores[i].nome, professores[i].cpf, professores[i].disciplina, professores[i].email);
+    }
+}
+
+//Excluir professor
+void excluir_professor(void) {
+    if (total_professores == 0) {
+        printf("Nenhum professor cadastrado para excluir.\n");
+        return;
+    }
+
+    listar_professores();
+    int escolha;
+    printf("Digite o número do professor que deseja excluir (0 para sair): ");
+    scanf("%d", &escolha);
+
+    if (escolha <= 0 || escolha > total_professores) {
+        printf("Saindo...\n");
+        return;
+    }
+
+    int indice = escolha - 1;
+    for (int i = indice; i < total_professores -1; i++) {
+        professores[i] = professores[i+1];
+    }
+
+    total_professores--;
+    salvar_professores_em_arquivo();
+    printf("Professor removido com sucesso.\n");
+}
+
+//Criar arquivo do professor A
+void arquivo_professor(const Professor *prof) {
+    FILE *fp = fopen("professores.txt", "a");
+    if (!fp) {
+        printf("Erro ao abrir arquivo para adicionar professor.\n");
+        return;
+    }
+
+    fprintf(fp, "Nome: %s\n", prof->nome);
+    fprintf(fp, "CPF: %s\n", prof->cpf);
+    fprintf(fp, "Disciplina %s\n", prof->disciplina);
+    fprintf(fp, "Email %s\n", prof->email);
+    fprintf(fp, "-----------\n");
+
+    fclose(fp);
+    printf("Professor %s adicionado ao arquivo.\n", prof->nome);
+}
+
+//Salvar e ler de arquivo W
+void salvar_professores_em_arquivo(void) {
+    FILE *fp = fopen("Professores.txt", "w");
+    if (!fp) {
+        perror("Erro ao abrir arquivo para salvar professores");
+        return;
+    }
+
+    for (int i = 0; i < total_professores; i++) {
+        fprintf(fp, "Nome: %s\n", professores[i].nome);
+        fprintf(fp, "CPF: %s\n", professores[i].cpf);
+        fprintf(fp, "Disciplina: %s\n", professores[i].disciplina);
+        fprintf(fp, "Email: %s\n", professores[i].email);
+        fprintf(fp, "--------------\n");
+    }
+
+    fclose(fp);
+    printf("Lista de professores atualizada no arquivo.\n");
+}
+
+//Carregar todos os professores do arquivo
+int carregar_professores_de_arquivo(void);
 
 //Complexos
 //Buscar aluno por id
@@ -265,7 +360,7 @@ void alterar_status_aluno(Aluno *aluno, const char *novo_status) {
     printf("Status do aluno alterado para: %s\n",aluno->status);
 }
 
-//Criar arquivo do aluno
+//Criar arquivo do aluno A
 void arquivo_aluno(const Aluno *aluno, const char *alunosss) {
     FILE *fp = fopen(alunosss, "a");// de w pra a, de write para append
     if (fp == NULL ) {
@@ -288,7 +383,7 @@ void arquivo_aluno(const Aluno *aluno, const char *alunosss) {
     printf("Dados do aluno salvos em '%s'.\n", alunosss);
 }
 
-//Salvar status novos no arquivo
+//Salvar status novos no arquivo W
 void salvar_alunos_em_arquivo(void) {
     FILE *fp = fopen("alunos.txt", "w");
     if (!fp) {

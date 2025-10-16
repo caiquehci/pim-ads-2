@@ -26,7 +26,7 @@ void menu_admin() {
             printf("Escolha uma das opções abaixo para continuar:\n");
             printf("1 - Cadastrar aluno\n");
             printf("2 - Alterar status do aluno\n");
-            printf("3 - Cadastrar professor\n");
+            printf("3 - Gerenciar professores\n");
             printf("4 - Cadastrar turma\n");
             printf("5 - Ver turmas cadastradas\n");
             printf("6 - Excluir turmas\n");
@@ -43,9 +43,39 @@ void menu_admin() {
 //                  alterar_status_aluno(&aluno, "inativo");
                     alterar_status_aluno_por_id();
                     break;
-                case 3:
-                    cadastrar_professor(&prof);
+                case 3: {
+                    int op_prof;
+                    do {
+                        printf("\n :::Gerenciamento de professores:::\n");
+                        printf("1 - Cadastrar novo professor\n");
+                        printf("2 - Listar professores\n");
+                        printf("3 - Excluir professor\n");
+                        printf("0 - Voltar ao menu anterior\n");
+                        printf("Escolha: \n");
+                        scanf("%d",&op_prof);
+                        getchar();
+
+                        switch (op_prof) {
+                            case 1:
+                                cadastrar_professor(&prof);
+                                professores[total_professores++] = prof;
+                                arquivo_professor(&prof);
+                                break;
+                            case 2:
+                                listar_professores();
+                                break;
+                            case 3:
+                                excluir_professor();
+                                break;
+                            case 0:
+                                printf("Voltando ao menu principal...\n");
+                                break;
+                            default:
+                                printf("Opção inválida.\n");
+                        }
+                    } while (op_prof != 0);
                     break;
+                }
                 case 4:
                     cadastrar_turma(&nova_turma);
                     adicionar_turma(&nova_turma);
