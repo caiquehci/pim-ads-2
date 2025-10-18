@@ -441,7 +441,7 @@ void arquivo_aluno(const Aluno *aluno, const char *alunosss) {
         return;
     }
     fprintf(fp, "ID: %d\n", aluno->id);
-    fprintf(fp, "Matrícula: %s\n", aluno->matricula);
+    fprintf(fp, "Matricula: %s\n", aluno->matricula);
     fprintf(fp, "Nome: %s\n", aluno->nome);
     fprintf(fp, "Endereco: %s\n", aluno->endereco);
     fprintf(fp, "CPF: %s\n", aluno->cpf);
@@ -513,8 +513,9 @@ int buscar_aluno_nome_matr(const char *entrada, Aluno *aluno_encontrado)
             memset(&temp, 0, sizeof(Aluno));
             sscanf(linha, "ID: %d", &temp.id);
         }
-        else if (sscanf(linha, "Matrícula: %15[^\n]", temp.matricula) == 1)
+        else if (sscanf(linha, "Matricula: %15[^\n]", temp.matricula) == 1)
         {
+            printf("Debug Matricula lida: '%s'\n", temp.matricula);
             continue;
         }
         else if (sscanf(linha, "Nome: %99[^\n]", temp.nome) == 1)
@@ -571,7 +572,7 @@ int buscar_aluno_nome_matr(const char *entrada, Aluno *aluno_encontrado)
 
 void exibir_dados_aluno(const Aluno *a) {
     printf("\n=== Dados do Aluno ===\n");
-    printf("Matrícula: %s\n", a->matricula);
+    printf("Matricula: %s\n", a->matricula);
     printf("Nome: %s\n", a->nome);
     printf("CPF: %s\n", a->cpf);
     printf("Endereço: %s\n", a->endereco);
@@ -589,7 +590,7 @@ void visualizar_aluno_buscado(void)
     char entrada[100];
     Aluno aluno;
 
-    printf("Digite o nome ou matrícula do aluno: ");
+    printf("Digite o nome ou matricula do aluno: ");
     fgets(entrada, sizeof(entrada), stdin);
     entrada[strcspn(entrada, "\n")] = 0;
 
