@@ -5,6 +5,10 @@
 #include "prof.h"
 
 void run_menu(const char *tipo_usuario) {
+    // chamando a lista de alunos mais atualizada, para que todos possam usar a melhor versão
+    total_alunos = ler_alunos_de_arquivo(alunos, MAX_ALUNOS);
+    printf("DEBUG: total_alunos = %d\n", total_alunos);
+
     if (strcmp(tipo_usuario, "admin") == 0) {
         menu_admin();
     }   else if (strcmp(tipo_usuario, "professor") == 0) {
@@ -30,6 +34,7 @@ void menu_admin() {
             printf("4 - Cadastrar turma\n");
             printf("5 - Ver turmas cadastradas\n");
             printf("6 - Excluir turmas\n");
+            printf("7 - Buscar aluno\n");
             printf("0 - Sair\n");
             printf("Sua opção:\n");
             scanf("%d",&opcao);
@@ -86,6 +91,9 @@ void menu_admin() {
                 case 6:
                     excluir_turmas();
                     break;
+                case 7:
+                    visualizar_aluno_buscado();
+                    break;
                 case 0:
                     printf("Saindo...\n");
                     break;
@@ -113,6 +121,9 @@ void menu_professor() {
     switch(opcao){
         case 1:
             atribuir_notas(alunos, total_alunos);
+            break;
+        case 2:
+            atribuir_faltas(alunos, total_alunos);
             break;
         case 0:
             printf("Voltando ao menu anterior...\n");

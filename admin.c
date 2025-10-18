@@ -13,7 +13,9 @@ int num_turmas = 0;
 Professor professores[MAX_PROFESSORES];
 int total_professores = 0;
 
-//Cadastrar turma
+// Turmas :::::::::::::::::::::::::::::::::::::::::::::::
+//
+// Cadastrar turma
 void cadastrar_turma(Turma *turma){
     printf("Cadastre uma nova turma\n");
 
@@ -23,13 +25,13 @@ void cadastrar_turma(Turma *turma){
     printf("Letra da turma [A-Z]: ");
     scanf(" %c",&turma->letra);
 
-    printf("Professor responsável: ")/
+    printf("Professor responsável: ");
     scanf(" %[^\n]",turma->nome_professor);
 
     printf("\nTurma cadastrada:\n");
     printf("Série: %s\n",turma->serie);
     printf("Letra: %c\n",turma->letra);
-    printf("Professor responsável: %s\n",turma->nome_professor);
+    printf("Professor responsável: %s\n",turma->nome_professor);        
 }
 
 //Adicionar uma nova turma
@@ -95,62 +97,96 @@ void excluir_turmas(void){
     mostrar_turmas();
 }
 
+//
 
-
-//Ler arquivos de aluno
-int ler_alunos_de_arquivo(Aluno alunos[], int max_alunos) {
+// Alunos :::::::::::::::::::::::::::::::::::::::::::::::
+//
+// Ler arquivos de aluno
+int ler_alunos_de_arquivo(Aluno alunos[], int max_alunos)
+{
     FILE *fp = fopen("alunos.txt", "r");
-    if (!fp) {
+    if (!fp)
+    {
         perror("Erro ao abrir arquivo alunos.txt");
         return 0;
     }
 
-    int i = 0;
     char linha[256];
-    while (i < max_alunos && !feof(fp)) {
-        if (fgets(linha, sizeof(linha), fp) == NULL) break;
+    int i = 0;
 
-        if (sscanf(linha, "ID: %d", &alunos[i].id) == 1) {
-            // Leia os demais campos, linha a linha
+    while (i < max_alunos && fgets(linha, sizeof(linha), fp) != NULL)
+    {
+        // Se a linha inicia com "ID:", então começa um registro
+        if (strstr(linha, "ID:") == linha)
+        {
+            // Limpa o struct do aluno
+            memset(&alunos[i], 0, sizeof(Aluno));
 
-            fgets(linha, sizeof(linha), fp);
-            sscanf(linha, "Nome: %[^\n]", alunos[i].nome);
+            // ID
+            sscanf(linha, "ID: %d", &alunos[i].id);
 
-            fgets(linha, sizeof(linha), fp);
-            sscanf(linha, "Endereco: %[^\n]", alunos[i].endereco);
-
-            fgets(linha, sizeof(linha), fp);
-            sscanf(linha, "CPF: %[^\n]", alunos[i].cpf);
-
-            fgets(linha, sizeof(linha), fp);
-            sscanf(linha, "Data de nascimento: %[^\n]", alunos[i].data_nascimento);
-
-            fgets(linha, sizeof(linha), fp);
-            sscanf(linha, "Turma: %s", alunos[i].turma);
-
-            fgets(linha, sizeof(linha), fp);
-            sscanf(linha, "Status: %s", alunos[i].status);
-
-            fgets(linha, sizeof(linha), fp);
-            char pend[4];
-            sscanf(linha, "Possui pendencias: %s", pend);
-            alunos[i].possui_pendencias = (strcmp(pend, "Sim") == 0);
-
-            fgets(linha, sizeof(linha), fp);
-            sscanf(linha, "Faltas: %d", &alunos[i].faltas);
-
-            fgets(linha, sizeof(linha), fp);
-            sscanf(linha, "Notas: %f %f %f %f ", &alunos[i].notas[0], &alunos[i].notas[1], &alunos[i].notas[2], &alunos[i].notas[3]);
-
-            // Pular o separador
-            fgets(linha, sizeof(linha), fp);
-
+            // Leitura das próximas linhas
+            // Cada uma contendo o campo após ":"
+            for (int campo = 0; campo < 10; campo++)
+            {
+                if (fgets(linha, sizeof(linha), fp) == NULL)
+                    break;
+                char *p = strchr(linha, ':');
+                if (p == NULL)
+                    continue;
+                p++; // avança após o ":"
+                while (*p == ' ')
+                    p++; // pula espaços
+                switch (campo)
+                {
+                case 0:
+                    sscanf(p, "%[^\n]", alunos[i].matricula);
+                    break;
+                case 1:
+                    sscanf(p, "%[^\n]", alunos[i].nome);
+                    break;
+                case 2:
+                    sscanf(p, "%[^\n]", alunos[i].endereco);
+                    break;
+                case 3:
+                    sscanf(p, "%[^\n]", alunos[i].cpf);
+                    break;
+                case 4:
+                    sscanf(p, "%[^\n]", alunos[i].data_nascimento);
+                    break;
+                case 5:
+                    sscanf(p, "%[^\n]", alunos[i].turma);
+                    break;
+                case 6:
+                    sscanf(p, "%[^\n]", alunos[i].status);
+                    break;
+                case 7:
+                {
+                    char pend[4];
+                    sscanf(p, "%s", pend);
+                    alunos[i].possui_pendencias = (strcmp(pend, "Sim") == 0);
+                }
+                break;
+                case 8:
+                    sscanf(p, "%d", &alunos[i].faltas);
+                    break;
+                case 9:
+                    sscanf(p, "Notas: %f %f %f %f",
+                           &alunos[i].notas[0],
+                           &alunos[i].notas[1],
+                           &alunos[i].notas[2],
+                           &alunos[i].notas[3]);
+                    break;
+                }
+            }
             i++;
+            // Leitura do separador
+            fgets(linha, sizeof(linha), fp);
         }
     }
 
     fclose(fp);
-    return i; // quantidade de alunos lidos
+    return i;
 }
 
 //Cadastrar aluno, clássico
@@ -169,6 +205,8 @@ void cadastrar_aluno(Aluno *aluno) {
 
     printf("Nome: ");
     scanf(" %[^\n]",aluno->nome); //ler com espaço até ENTER
+    
+    gerar_matricula_aluno(aluno->matricula); // recém criado pra poupar serviço no menu
 
     printf("Endereço: ");
     scanf(" %[^\n]",aluno->endereco);
@@ -183,7 +221,7 @@ void cadastrar_aluno(Aluno *aluno) {
     scanf(" %[^\n]",aluno->turma);
 
     printf("\nAluno cadastrado:\n");
-    printf("Nome: %s\nEndereço: %s\nCPF: %s\nData de nascimento: %s\nTurma: %s\n",aluno->nome,aluno->endereco,aluno->cpf,aluno->data_nascimento,aluno->turma);
+    printf("Nome: %s\nMatricula: %s\nEndereço: %s\nCPF: %s\nData de nascimento: %s\nTurma: %s\n",aluno->nome,aluno->matricula,aluno->endereco,aluno->cpf,aluno->data_nascimento,aluno->turma);
 
     printf("Status: %s\nPossui pendências: ", aluno->status);
         if (aluno->possui_pendencias) 
@@ -194,11 +232,41 @@ void cadastrar_aluno(Aluno *aluno) {
     char nome_arquivo[50];
 //    sprintf(nome_arquivo, "aluno_%d.txt", aluno->id);
 //isso era pra fazer um arquivo por aluno
+//    printf("Matricula que será gravada: %s\n", aluno->matricula); Coloquei isso no 'aluno cadastrado'
     arquivo_aluno(aluno, "alunos.txt");
 }
 
+void gerar_matricula_aluno(char matricula[]) {
+    FILE *f = fopen("contador_matricula.txt", "r+");
+    int numero = 1;
+
+    if (f != NULL) {
+        if (fscanf(f, "%d", &numero) != 1) {
+            numero = 1;
+        }
+
+        rewind(f);
+        fprintf(f, "%d", numero + 1); 
+        fclose(f);
+    } else {
+        f = fopen("contador_matricula.txt", "w");
+        if (f == NULL) {
+            fprintf(stderr, "Erro ao abrir arquivo de contador.\n");
+            return;
+        }
+        
+        fprintf(f, "%d", 1);
+        fclose(f);
+    }
+
+    snprintf(matricula, 5, "%04d", numero);
+}
+
+//
 
 
+//Professores :::::::::::::::::::::::::::::::::::::::::::::::
+//
 //Cadastrar professor, clássico
 void cadastrar_professor(Professor *prof) {
     printf("Cadastro de professor: \n");
@@ -311,8 +379,13 @@ void salvar_professores_em_arquivo(void) {
 //Carregar todos os professores do arquivo
 int carregar_professores_de_arquivo(void);
 
-//Complexos
-//Buscar aluno por id
+//
+
+
+
+// Complexos :::::::::::::::::::::::::::::::::::::::::::::::
+//
+// Buscar aluno por id
 int buscar_aluno_por_id(int id) {
     for (int i = 0; i < total_alunos; i++) {
         if (alunos[i].id == id) {
@@ -360,7 +433,7 @@ void alterar_status_aluno(Aluno *aluno, const char *novo_status) {
     printf("Status do aluno alterado para: %s\n",aluno->status);
 }
 
-//Criar arquivo do aluno A
+//Criar arquivo do aluno Append
 void arquivo_aluno(const Aluno *aluno, const char *alunosss) {
     FILE *fp = fopen(alunosss, "a");// de w pra a, de write para append
     if (fp == NULL ) {
@@ -368,6 +441,7 @@ void arquivo_aluno(const Aluno *aluno, const char *alunosss) {
         return;
     }
     fprintf(fp, "ID: %d\n", aluno->id);
+    fprintf(fp, "Matrícula: %s\n", aluno->matricula);
     fprintf(fp, "Nome: %s\n", aluno->nome);
     fprintf(fp, "Endereco: %s\n", aluno->endereco);
     fprintf(fp, "CPF: %s\n", aluno->cpf);
@@ -377,13 +451,14 @@ void arquivo_aluno(const Aluno *aluno, const char *alunosss) {
     fprintf(fp, "Possui pendencias: %s\n", aluno->possui_pendencias ? "Sim" : "Nao");
     fprintf(fp, "Faltas: %d\n", aluno->faltas);
     fprintf(fp, "Notas: %.2f %.2f %.2f %.2f\n", aluno->notas[0],aluno->notas[1],aluno->notas[2],aluno->notas[3]);
+    fprintf(fp, "------------------------\n");
 
     fclose(fp);
 
     printf("Dados do aluno salvos em '%s'.\n", alunosss);
 }
 
-//Salvar status novos no arquivo W
+//Salvar status novos no arquivo Write
 void salvar_alunos_em_arquivo(void) {
     FILE *fp = fopen("alunos.txt", "w");
     if (!fp) {
@@ -392,6 +467,7 @@ void salvar_alunos_em_arquivo(void) {
     }
     for (int i = 0; i < total_alunos; i++) {
         fprintf(fp, "ID: %d\n", alunos[i].id);
+        fprintf(fp, "Matricula: %s\n", alunos[i].matricula);
         fprintf(fp, "Nome: %s\n", alunos[i].nome);
         fprintf(fp, "Endereco: %s\n", alunos[i].endereco);
         fprintf(fp, "CPF: %s\n", alunos[i].cpf);
@@ -404,4 +480,123 @@ void salvar_alunos_em_arquivo(void) {
         fprintf(fp, "------------------------------\n");
     }
     fclose(fp);
+}
+
+int buscar_aluno_nome_matr(const char *entrada, Aluno *aluno_encontrado)
+{
+    FILE *f = fopen("alunos.txt", "r");
+    if (!f)
+    {
+        printf("Erro ao abrir arquivo.\n");
+        return 0;
+    }
+
+    Aluno temp = {0};
+    char linha[256];
+    int achou = 0;
+
+    while (fgets(linha, sizeof(linha), f))
+    {
+        if (strncmp(linha, "ID:", 3) == 0)
+        {
+            // Se já está lendo um aluno, checa se era o procurado
+            if (temp.id != 0)
+            {
+                if (strcmp(temp.nome, entrada) == 0 || strcmp(temp.matricula, entrada) == 0)
+                {
+                    *aluno_encontrado = temp;
+                    achou = 1;
+                    break;
+                }
+            }
+            // Reinicia o struct e começa novo aluno
+            memset(&temp, 0, sizeof(Aluno));
+            sscanf(linha, "ID: %d", &temp.id);
+        }
+        else if (sscanf(linha, "Matrícula: %15[^\n]", temp.matricula) == 1)
+        {
+            continue;
+        }
+        else if (sscanf(linha, "Nome: %99[^\n]", temp.nome) == 1)
+        {
+            continue;
+        }
+        else if (sscanf(linha, "CPF: %20[^\n]", temp.cpf) == 1)
+        {
+            continue;
+        }
+        else if (sscanf(linha, "Endereço: %99[^\n]", temp.endereco) == 1)
+        {
+            continue;
+        }
+        else if (sscanf(linha, "Data de nascimento: %20[^\n]", temp.data_nascimento) == 1)
+        {
+            continue;
+        }
+        else if (sscanf(linha, "Turma: %20[^\n]", temp.turma) == 1)
+        {
+            continue;
+        }
+        else if (sscanf(linha, "Status: %20[^\n]", temp.status) == 1)
+        {
+            continue;
+        }
+        else if (strncmp(linha, "Possui pendências:", 18) == 0)
+        {
+            char pend[10];
+            sscanf(linha, "Possui pendências: %9s", pend);
+            temp.possui_pendencias = (strcmp(pend, "Sim") == 0);
+        }
+        else if (sscanf(linha, "Faltas: %d", &temp.faltas) == 1)
+        {
+            continue;
+        }
+        else if (sscanf(linha, "Notas: %f %f %f %f",
+                        &temp.notas[0], &temp.notas[1], &temp.notas[2], &temp.notas[3]) == 4)
+        {
+            continue;
+        }
+    }
+
+    // Checa o último aluno lido (importante!)
+    if (!achou && (strcmp(temp.nome, entrada) == 0 || strcmp(temp.matricula, entrada) == 0))
+    {
+        *aluno_encontrado = temp;
+        achou = 1;
+    }
+
+    fclose(f);
+    return achou;
+}
+
+void exibir_dados_aluno(const Aluno *a) {
+    printf("\n=== Dados do Aluno ===\n");
+    printf("Matrícula: %s\n", a->matricula);
+    printf("Nome: %s\n", a->nome);
+    printf("CPF: %s\n", a->cpf);
+    printf("Endereço: %s\n", a->endereco);
+    printf("Data de nascimento: %s\n", a->data_nascimento);
+    printf("Turma: %s\n", a->turma);
+    printf("Status: %s\n", a->status);
+    printf("Possui pendências: %s\n", a->possui_pendencias ? "Sim" : "Não");
+    printf("Faltas: %d\n", a->faltas);
+    printf("Notas: %.2f %.2f %.2f %.2f\n",
+           a->notas[0], a->notas[1], a->notas[2], a->notas[3]);
+}
+
+void visualizar_aluno_buscado(void)
+{
+    char entrada[100];
+    Aluno aluno;
+
+    printf("Digite o nome ou matrícula do aluno: ");
+    fgets(entrada, sizeof(entrada), stdin);
+    entrada[strcspn(entrada, "\n")] = 0;
+
+    if (buscar_aluno_nome_matr(entrada, &aluno))
+    {
+        exibir_dados_aluno(&aluno);
+    } else {
+        printf("Aluno não encontrado.\n");
+    }
 }

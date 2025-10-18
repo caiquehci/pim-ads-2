@@ -11,17 +11,18 @@ extern int total_alunos;
 //Estrutura de aluno
 typedef struct { //Todas as infos são declaradas aqui, mesmo que não sejam utilizadas em todas as funções. Bom que centraliza tudo
     int id;
+    char matricula[7];
     
-    char nome[100];
-    char endereco[200];
-    char cpf[15];
-    char data_nascimento[12];
-    char turma[2]; //A, B, C, D ou E
-    char status[10]; //"ativo" ou "inativo"
+    char nome[200];
+    char endereco[400];
+    char cpf[30];
+    char data_nascimento[24];
+    char turma[4]; //A, B, C, D ou E
+    char status[20]; //"ativo" ou "inativo"
     int possui_pendencias; //1 para sim, 0 para não
 
     int faltas;
-    float notas[4];  
+    float notas[40];  
 } Aluno;
 
 extern Aluno alunos[MAX_ALUNOS];
@@ -46,24 +47,28 @@ typedef struct {
 
 extern Turma lista_turmas[MAX_TURMAS];
 
-//funções de cadastro no sistema
-//Turma
+// funções de cadastro no sistema
+// Turma :::::::::::::::::::::::::::::::::::::::::::::::
 void cadastrar_turma(Turma *turma);
 void adicionar_turma(Turma *turma);
 void mostrar_turmas(void);
 void excluir_turmas(void);
 
-////Aluno
+////Aluno :::::::::::::::::::::::::::::::::::::::::::::::
 void cadastrar_aluno(Aluno *aluno);
+void gerar_matricula_aluno(char matricula[]);
 void alterar_status_aluno(Aluno *aluno, const char *novo_status);
 void alterar_status_aluno_por_id(void);
 int buscar_aluno_por_id(int id);
 int ler_alunos_de_arquivo(Aluno alunos[], int max_alunos);
+int buscar_aluno_nome_matr(const char *entrada, Aluno *aluno_encontrado);
+void exibir_dados_aluno(const Aluno *aluno);
+void visualizar_aluno_buscado();
 
 void arquivo_aluno(const Aluno *aluno, const char *nome_arquivo);
 void salvar_alunos_em_arquivo(void);
 
-////Professor
+////Professor :::::::::::::::::::::::::::::::::::::::::::::::
 void cadastrar_professor(Professor *prof);
 void adicionar_professor(Professor *prof);
 void listar_professores(void);

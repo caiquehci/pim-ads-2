@@ -1,11 +1,60 @@
 ID: 1
+Matricula: 0006
 Nome: Carlos
-Endereco: Rua heitor
-CPF: 43717451804
-Data de nascimento: 04/08/1994
+Endereco: Rua
+CPF: 12
+Data de nascimento: 04081994
 Turma: C
-Status: inativo
+Status: ativo
 Possui pendencias: Nao
 Faltas: 0
-Notas: 4.00 4.00 9.00 4.00
+Notas: 4.00 4.00 4.00 4.00
+------------------------------
+ID: 2
+Matricula: 0007
+Nome: Daniel
+Endereco: Rua
+CPF: 12
+Data de nascimento: 14071999
+Turma: D
+Status: ativo
+Possui pendencias: Nao
+Faltas: 0
+Notas: 5.00 5.00 5.00 5.00
+------------------------------
+ID: 3
+Matricula: 0008
+Nome: Aline
+Endereco: Rua
+CPF: 12
+Data de nascimento: 13101986
+Turma: A
+Status: ativo
+Possui pendencias: Nao
+Faltas: 0
+Notas: 6.00 6.00 6.00 6.00
+------------------------------
+ID: 4
+Matricula: 0009
+Nome: Otavio
+Endereco: Rua
+CPF: 12
+Data de nascimento: 28091994
+Turma: E
+Status: ativo
+Possui pendencias: Nao
+Faltas: 0
+Notas: 7.00 7.00 7.00 7.00
+------------------------------
+ID: 5
+Matricula: 0010
+Nome: Joao
+Endereco: Rua
+CPF: 12
+Data de nascimento: 23111994
+Turma: B
+Status: ativo
+Possui pendencias: Nao
+Faltas: 0
+Notas: 8.00 8.00 8.00 8.00
 ------------------------------
