@@ -1,0 +1,10 @@
+Nome: Caneca
+CPF: 12
+Disciplina: fisica
+Email: louco@
+--------------
+Nome: cutmeloose
+CPF: 12
+Disciplina: english
+Email: confession@
+--------------

@@ -71,9 +71,13 @@ int ler_alunos_de_arquivo(Aluno alunos[], int max_alunos);
 int buscar_aluno_nome_matr(const char *entrada, Aluno *aluno_encontrado);
 void exibir_dados_aluno(const Aluno *aluno);
 void visualizar_aluno_buscado();
+void gerar_relatorio_alunos(const char *filtro_turma, const char *filtro_status, int filtrar_pendencias);
 
 void arquivo_aluno(const Aluno *aluno, const char *nome_arquivo);
 void salvar_alunos_em_arquivo(void);
+void gerar_boletim_aluno(const Aluno *a);
+void gerar_boletim_individual();
+void gerar_boletim_todos();
 
 ////Professor :::::::::::::::::::::::::::::::::::::::::::::::
 void cadastrar_professor(Professor *prof);

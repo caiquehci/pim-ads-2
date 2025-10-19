@@ -8,33 +8,41 @@ void run_menu(const char *tipo_usuario) {
     // chamando a lista de alunos mais atualizada, para que todos possam usar a melhor versão
     total_alunos = ler_alunos_de_arquivo(alunos, MAX_ALUNOS);
 
-    for (int i = 0; i < total_alunos; i++)
+//DEBUG SECTION
+//    for (int i = 0; i < total_alunos; i++)
+//    {
+//        printf("Aluno %s, notas: %.2f %.2f %.2f %.2f\n", alunos[i].nome, alunos[i].notas[0], alunos[i].notas[1], alunos[i].notas[2], alunos[i].notas[3]);
+//    }
+
+//    printf("DEBUG: total_alunos = %d\n", total_alunos);
+
+void gerar_relatorio_alunos(const char *filtro_turma, const char *filtro_status, int filtrar_pendencias);
+
+    if (strcmp(tipo_usuario, "admin") == 0)
     {
-        printf("Aluno %s, notas: %.2f %.2f %.2f %.2f\n", alunos[i].nome, alunos[i].notas[0], alunos[i].notas[1], alunos[i].notas[2], alunos[i].notas[3]);
-    }
-
-    printf("DEBUG: total_alunos = %d\n", total_alunos);
-
-    if (strcmp(tipo_usuario, "admin") == 0) {
         menu_admin();
-    }   else if (strcmp(tipo_usuario, "professor") == 0) {
+    }
+    else if (strcmp(tipo_usuario, "professor") == 0)
+    {
         menu_professor();
-    }   else if (strcmp(tipo_usuario, "aluno") == 0) {
+    }
+    else if (strcmp(tipo_usuario, "aluno") == 0)
+    {
         menu_aluno();
-    }   else {
+    }
+    else
+    {
         printf("Tipo não cadastrado.\n");
     }
 }
 
-void menu_admin()
-{
+void menu_admin() {
     int opcao;
     Aluno aluno;
     Professor prof;
     Turma nova_turma;
 
-    do
-    {
+    do {
         printf("\nMenu [A] - Opções de alto nível de gerenciamento.\n");
         printf("Escolha uma das opções abaixo para continuar:\n");
         printf("1 - Gerenciamento de alunos\n");
@@ -56,6 +64,7 @@ void menu_admin()
                 printf("1 - Cadastrar novo aluno\n");
                 printf("2 - Alterar status do aluno\n");
                 printf("3 - Buscar aluno\n");
+                printf("4 - Boletins\n");
                 printf("0 - Voltar ao menu anterior\n");
                 printf("Escolha: ");
                 scanf("%d", &op_aluno);
@@ -72,6 +81,34 @@ void menu_admin()
                 case 3:
                     visualizar_aluno_buscado();
                     break;
+                case 4: {
+                    int op_boletim;
+                    do {
+                        printf("\n ::: Gerenciamento de boletins :::\n");
+                        printf("1 - Gerar boletim geral\n");
+                        printf("2 - Gerar boletim individual\n");
+                        printf("0 - Voltar ao menu anterior\n");
+                        printf("Escolha: ");
+                        scanf("%d", &op_boletim);
+                        getchar();
+
+                        switch (op_boletim) {
+                            case 1:
+                                gerar_boletim_todos();
+                                break;
+                            case 2:
+                                gerar_boletim_individual();
+                                break;
+                            case 0:
+                                printf("Voltando ao menu anterior...\n");
+                                break;
+                            default:
+                                printf("Opção inválida.\n");
+                        }
+                    } while (op_boletim != 0);
+                    break;
+                }
+
                 case 0:
                     printf("Voltando ao menu principal...\n");
                     break;
@@ -154,7 +191,13 @@ void menu_admin()
             } while (op_turma != 0);
             break;
         }
-
+        case 4: {
+            const char *turma_filtro = "";
+            const char *status_filtro = "";
+            int filtrar_pendencias = 0;
+            gerar_relatorio_alunos(turma_filtro, status_filtro, filtrar_pendencias);
+            break;
+        }
         case 0:
             printf("Saindo...\n");
             break;

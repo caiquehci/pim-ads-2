@@ -578,11 +578,9 @@ void salvar_alunos_em_arquivo(void) {
     fclose(fp);
 }
 
-int buscar_aluno_nome_matr(const char *entrada, Aluno *aluno_encontrado)
-{
+int buscar_aluno_nome_matr(const char *entrada, Aluno *aluno_encontrado) {
     FILE *f = fopen("alunos.txt", "r");
-    if (!f)
-    {
+    if (!f) {
         printf("Erro ao abrir arquivo.\n");
         return 0;
     }
@@ -591,15 +589,12 @@ int buscar_aluno_nome_matr(const char *entrada, Aluno *aluno_encontrado)
     char linha[256];
     int achou = 0;
 
-    while (fgets(linha, sizeof(linha), f))
-    {
-        if (strncmp(linha, "ID:", 3) == 0)
-        {
+    while (fgets(linha, sizeof(linha), f)) {
+        if (strncmp(linha, "ID:", 3) == 0) {
             // Se já está lendo um aluno, checa se era o procurado
             if (temp.id != 0)
             {
-                if (strcmp(temp.nome, entrada) == 0 || strcmp(temp.matricula, entrada) == 0)
-                {
+                if (strcmp(temp.nome, entrada) == 0 || strcmp(temp.matricula, entrada) == 0) {
                     *aluno_encontrado = temp;
                     achou = 1;
                     break;
@@ -608,48 +603,28 @@ int buscar_aluno_nome_matr(const char *entrada, Aluno *aluno_encontrado)
             // Reinicia o struct e começa novo aluno
             memset(&temp, 0, sizeof(Aluno));
             sscanf(linha, "ID: %d", &temp.id);
-        }
-        else if (sscanf(linha, "Matricula: %15[^\n]", temp.matricula) == 1)
-        {
+        } else if (sscanf(linha, "Matricula: %15[^\n]", temp.matricula) == 1) {
             continue;
-        }
-        else if (sscanf(linha, "Nome: %99[^\n]", temp.nome) == 1)
-        {
+        } else if (sscanf(linha, "Nome: %99[^\n]", temp.nome) == 1) {
             continue;
-        }
-        else if (sscanf(linha, "CPF: %20[^\n]", temp.cpf) == 1)
-        {
+        } else if (sscanf(linha, "CPF: %20[^\n]", temp.cpf) == 1) {
             continue;
-        }
-        else if (sscanf(linha, "Endereco: %99[^\n]", temp.endereco) == 1)
-        {
+        } else if (sscanf(linha, "Endereco: %99[^\n]", temp.endereco) == 1) {
             continue;
-        }
-        else if (sscanf(linha, "Data de nascimento: %20[^\n]", temp.data_nascimento) == 1)
-        {
+        } else if (sscanf(linha, "Data de nascimento: %20[^\n]", temp.data_nascimento) == 1) {
             continue;
-        }
-        else if (sscanf(linha, "Turma: %20[^\n]", temp.turma) == 1)
-        {
+        } else if (sscanf(linha, "Turma: %20[^\n]", temp.turma) == 1) {
             continue;
-        }
-        else if (sscanf(linha, "Status: %20[^\n]", temp.status) == 1)
-        {
+        } else if (sscanf(linha, "Status: %20[^\n]", temp.status) == 1) {
             continue;
-        }
-        else if (strncmp(linha, "Possui pendências:", 18) == 0)
-        {
+        } else if (strncmp(linha, "Possui pendências:", 18) == 0) {
             char pend[10];
             sscanf(linha, "Possui pendências: %9s", pend);
             temp.possui_pendencias = (strcmp(pend, "Sim") == 0);
-        }
-        else if (sscanf(linha, "Faltas: %d", &temp.faltas) == 1)
-        {
+        } else if (sscanf(linha, "Faltas: %d", &temp.faltas) == 1) {
             continue;
-        }
-        else if (sscanf(linha, "Notas: %f %f %f %f",
-                        &temp.notas[0], &temp.notas[1], &temp.notas[2], &temp.notas[3]) == 4)
-        {
+        } else if (sscanf(linha, "Notas: %f %f %f %f",
+                        &temp.notas[0], &temp.notas[1], &temp.notas[2], &temp.notas[3]) == 4) {
             continue;
         }
     }
@@ -680,8 +655,7 @@ void exibir_dados_aluno(const Aluno *a) {
            a->notas[0], a->notas[1], a->notas[2], a->notas[3]);
 }
 
-void visualizar_aluno_buscado(void)
-{
+void visualizar_aluno_buscado(void) {
     char entrada[100];
     Aluno aluno;
 
@@ -689,10 +663,112 @@ void visualizar_aluno_buscado(void)
     fgets(entrada, sizeof(entrada), stdin);
     entrada[strcspn(entrada, "\n")] = 0;
 
-    if (buscar_aluno_nome_matr(entrada, &aluno))
-    {
+    if (buscar_aluno_nome_matr(entrada, &aluno)) {
         exibir_dados_aluno(&aluno);
     } else {
         printf("Aluno não encontrado.\n");
+    }
+}
+
+void gerar_boletim_aluno(const Aluno *a) {
+    // Verificar se todas as notas são zero
+    int todas_zero = 1;
+    for (int i = 0; i < 4; i++) {
+        if (a->notas[i] != 0.0f) {
+            todas_zero = 0;
+            break;
+        }
+    }
+
+    if (todas_zero) {
+        printf("Relatório não pode ser gerado:\nTodas as notas estão zeradas para o aluno %s.\n", a->nome);
+        return;
+    }
+
+    // Mostrar boletim formatado
+    printf("\n=== Boletim do Aluno ===\n");
+    printf("Nome: %s\n", a->nome);
+    printf("Matrícula: %s\n", a->matricula);
+    printf("Turma: %s\n\n", a->turma);
+
+    printf("Notas:\n");
+    for (int i = 0; i < 4; i++) {
+        printf("Nota %d: %.2f\n", i + 1, a->notas[i]);
+    }
+
+    // Calcular e mostrar a média
+    float soma = 0.0f;
+    for (int i = 0; i < 4; i++) {
+        soma += a->notas[i];
+    }
+    float media = soma / 4.0f;
+    printf("\nMédia final: %.2f\n", media);
+
+    if (media >= 6.0f) {
+        printf("Status: Aprovado\n");
+    } else {
+        printf("Status: Reprovado\n");
+    }
+    printf("=======================\n\n");
+}
+
+void gerar_relatorio_alunos(const char *filtro_turma, const char *filtro_status, int filtrar_pendencias)
+{
+    printf("\n== Relatório Completo de Alunos ==\n");
+
+    for (int i = 0; i < total_alunos; i++)
+    {
+        Aluno *a = &alunos[i];
+
+        // Verificar filtro de turma
+        if (filtro_turma != NULL && strlen(filtro_turma) > 0 && strcmp(a->turma, filtro_turma) != 0)
+        {
+            continue;
+        }
+
+        // Verificar filtro de status
+        if (filtro_status != NULL && strlen(filtro_status) > 0 && strcmp(a->status, filtro_status) != 0)
+        {
+            continue;
+        }
+
+        // Verificar filtro de pendências
+        if (filtrar_pendencias && !a->possui_pendencias)
+        {
+            continue;
+        }
+
+        printf("Nome: %s\nCPF: %s\nEndereco: %s\nTurma: %s\nStatus: %s\nPendencias: %s\nFaltas: %d\nNotas: %.2f %.2f %.2f %.2f\n----------------------\n",
+               a->nome, a->cpf, a->endereco, a->turma, a->status,
+               a->possui_pendencias ? "Sim" : "Não",
+               a->faltas,
+               a->notas[0], a->notas[1], a->notas[2], a->notas[3]);
+    }
+}
+
+void gerar_boletim_individual() {
+    char entrada[100];
+    Aluno aluno;
+
+    printf("Digite o nome ou matricula do aluno para o boletim: ");
+    fgets(entrada, sizeof(entrada), stdin);
+    entrada[strcspn(entrada, "\n")] = 0; // remove \n
+
+    if (buscar_aluno_nome_matr(entrada, &aluno)) {
+        gerar_boletim_aluno(&aluno);
+    } else {
+        printf("Aluno não encontrado.\n");
+    }
+}
+
+void gerar_boletim_todos() {
+    int total = ler_alunos_de_arquivo(alunos, MAX_ALUNOS);
+    if (total == 0) {
+        printf("Nenhum aluno cadastrado.\n");
+        return;
+    }
+
+    for (int i = 0; i < total; i++) {
+        gerar_boletim_aluno(&alunos[i]);
     }
 }

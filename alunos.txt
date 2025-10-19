@@ -7,7 +7,7 @@ Data de nascimento: 1
 Turma: C
 Status: inativo
 Possui pendencias: Nao
-Faltas: 0
+Faltas: 94
 Notas: 1.00 1.00 1.00 1.00
 ------------------------------
 ID: 2
@@ -29,7 +29,7 @@ Endereco: 12
 CPF: 12
 Data de nascimento: 12
 Turma: E
-Status: ativo
+Status: inativo
 Possui pendencias: Nao
 Faltas: 0
 Notas: 3.00 3.00 3.00 3.00
