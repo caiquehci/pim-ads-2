@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "prof.h"
 #include "admin.h"
 #include "menu.h"
@@ -36,6 +37,7 @@ void atribuir_notas(Aluno *aluno, int num_alunos) {
         scanf("%f", &alunos[indice].notas[j]);
     }
 
+    calcular_situacao(&alunos[indice]);
     salvar_alunos_em_arquivo();
 
     printf("\nNotas atribuídas para %s: \n", alunos[indice].nome);
@@ -45,15 +47,13 @@ void atribuir_notas(Aluno *aluno, int num_alunos) {
 }
 
 void atribuir_faltas(Aluno *aluno, int num_alunos) {
-    if (num_alunos == 0)
-    {
+    if (num_alunos == 0) {
         printf("Nenhum aluno cadastrado.\n");
         return;
     }
 
     printf("\nLista de alunos disponíveis:\n");
-    for (int i = 0; i < num_alunos; i++)
-    {
+    for (int i = 0; i < num_alunos; i++) {
         printf("%d - %s (Turma %s)\n", i + 1, aluno[i].nome, aluno[i].turma);
     }
 
@@ -62,15 +62,13 @@ void atribuir_faltas(Aluno *aluno, int num_alunos) {
     scanf("%d", &escolha);
     getchar();
 
-    if (escolha == 0)
-    {
+    if (escolha == 0) {
         printf("Operação cancelada.\n");
         return;
     }
 
     int indice = escolha - 1;
-    if (indice < 0 || indice >= num_alunos)
-    {
+    if (indice < 0 || indice >= num_alunos) {
         printf("Aluno inexistente.\n");
         return;
     }
@@ -80,14 +78,39 @@ void atribuir_faltas(Aluno *aluno, int num_alunos) {
     scanf("%d", &faltas);
     getchar();
 
-    if (faltas < 0 || faltas > 100)
-    {
+    if (faltas < 0 || faltas > 100) {
         printf("Valor incorreto de faltas.\n");
         return;
     }
 
     aluno[indice].faltas = faltas;
-    printf("Faltas atribuídas para %s: %d\n", aluno[indice].nome, faltas);
 
+    calcular_situacao(&aluno[indice]);
+
+    printf("Faltas atribuídas para %s: %d\n", aluno[indice].nome, faltas);
     salvar_alunos_em_arquivo();
+
+}
+
+void calcular_situacao(Aluno *aluno)
+{
+    float soma_notas = 0.0;
+    int num_notas = 4; // ou quantas notas usa
+
+    for (int i = 0; i < num_notas; i++)
+    {
+        soma_notas += aluno->notas[i];
+    }
+
+    float media = soma_notas / num_notas;
+    int faltas_maximas = 25;
+
+    if (media < 6.0 || aluno->faltas > faltas_maximas)
+    {
+        strcpy(aluno->situacao, "reprovado");
+    }
+    else
+    {
+        strcpy(aluno->situacao, "aprovado");
+    }
 }

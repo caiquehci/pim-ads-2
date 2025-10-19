@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "admin.h"
+#include "prof.h"
 
 extern int proximo_id;
 
@@ -102,33 +103,30 @@ void excluir_turmas(void){
 // Alunos :::::::::::::::::::::::::::::::::::::::::::::::
 //
 // Ler arquivos de aluno
-int ler_alunos_de_arquivo(Aluno alunos[], int max_alunos)
-{
+int ler_alunos_de_arquivo(Aluno alunos[], int max_alunos) {
     FILE *fp = fopen("alunos.txt", "r");
-    if (!fp)
-    {
+    if (!fp) {
         perror("Erro ao abrir arquivo alunos.txt");
         return 0;
     }
 
-    char linha[256];
+    char linha[1024];
     int i = 0;
 
-    while (i < max_alunos && fgets(linha, sizeof(linha), fp) != NULL)
-    {
+    while (i < max_alunos && fgets(linha, sizeof(linha), fp) != NULL) {
         // Se a linha inicia com "ID:", então começa um registro
-        if (strstr(linha, "ID:") == linha)
-        {
+        if (strstr(linha, "ID:") == linha) {
             // Limpa o struct do aluno
             memset(&alunos[i], 0, sizeof(Aluno));
 
             // ID
             sscanf(linha, "ID: %d", &alunos[i].id);
 
+            int situacao_lida = 0;
+
             // Leitura das próximas linhas
             // Cada uma contendo o campo após ":"
-            for (int campo = 0; campo < 10; campo++)
-            {
+            for (int campo = 0; campo < 10; campo++) {
                 if (fgets(linha, sizeof(linha), fp) == NULL)
                     break;
                 char *p = strchr(linha, ':');
@@ -137,48 +135,53 @@ int ler_alunos_de_arquivo(Aluno alunos[], int max_alunos)
                 p++; // avança após o ":"
                 while (*p == ' ')
                     p++; // pula espaços
-                switch (campo)
-                {
-                case 0:
-                    sscanf(p, "%[^\n]", alunos[i].matricula);
-                    break;
-                case 1:
-                    sscanf(p, "%[^\n]", alunos[i].nome);
-                    break;
-                case 2:
-                    sscanf(p, "%[^\n]", alunos[i].endereco);
-                    break;
-                case 3:
-                    sscanf(p, "%[^\n]", alunos[i].cpf);
-                    break;
-                case 4:
-                    sscanf(p, "%[^\n]", alunos[i].data_nascimento);
-                    break;
-                case 5:
-                    sscanf(p, "%[^\n]", alunos[i].turma);
-                    break;
-                case 6:
-                    sscanf(p, "%[^\n]", alunos[i].status);
-                    break;
-                case 7:
-                {
-                    char pend[4];
-                    sscanf(p, "%s", pend);
-                    alunos[i].possui_pendencias = (strcmp(pend, "Sim") == 0);
-                }
-                break;
-                case 8:
-                    sscanf(p, "%d", &alunos[i].faltas);
-                    break;
-                case 9:
-                    sscanf(p, "%f %f %f %f",
-                           &alunos[i].notas[0],
-                           &alunos[i].notas[1],
-                           &alunos[i].notas[2],
-                           &alunos[i].notas[3]);
-                    break;
+
+                switch (campo) {
+                    case 0:
+                        sscanf(p, "%[^\n]", alunos[i].matricula);
+                        break;
+                    case 1:
+                        sscanf(p, "%[^\n]", alunos[i].nome);
+                        break;
+                    case 2:
+                        sscanf(p, "%[^\n]", alunos[i].endereco);
+                        break;
+                    case 3:
+                        sscanf(p, "%[^\n]", alunos[i].cpf);
+                        break;
+                    case 4:
+                        sscanf(p, "%[^\n]", alunos[i].data_nascimento);
+                        break;
+                    case 5:
+                        sscanf(p, "%d", &alunos[i].ano);
+                        break;
+                    case 6:
+                        sscanf(p, "%[^\n]", alunos[i].turma);
+                        break;
+                    case 7:
+                        sscanf(p, "%[^\n]", alunos[i].status);
+                        break;
+                    case 8: {
+                        char pend[4];
+                        sscanf(p, "%s", pend);
+                        alunos[i].possui_pendencias = (strcmp(pend, "Sim") == 0);
+                    } break;
+                    case 9:
+                        sscanf(p, "%d", &alunos[i].faltas);
+                        break;
+                    case 10:
+                        sscanf(p, "%f %f %f %f", &alunos[i].notas[0], &alunos[i].notas[1], &alunos[i].notas[2], &alunos[i].notas[3]);
+                        break;
+                    case 11:
+                        sscanf(p, "%[^\n]", alunos[i].situacao);
+                        situacao_lida = 1;
+                        break;
                 }
             }
+
+            if (!situacao_lida)
+                alunos[i].situacao[0] = '\0';
+
             i++;
             // Leitura do separador
             fgets(linha, sizeof(linha), fp);
@@ -207,22 +210,25 @@ void cadastrar_aluno(Aluno *aluno) {
     printf("Cadastre um novo aluno\n");
 
     printf("Nome: ");
-    scanf(" %[^\n]",aluno->nome); //ler com espaço até ENTER
+    scanf(" %[^\n]", aluno->nome); //ler com espaço até ENTER
     
     printf("Endereco: ");
-    scanf(" %[^\n]",aluno->endereco);
+    scanf(" %[^\n]", aluno->endereco);
 
     printf("CPF: ");
-    scanf(" %[^\n]",aluno->cpf);
+    scanf(" %[^\n]", aluno->cpf);
     
     printf("Data de nascimento (DD/MM/AAAA): ");
-    scanf(" %[^\n]",aluno->data_nascimento);
+    scanf(" %[^\n]", aluno->data_nascimento);
+
+    printf("Ano do aluno: ");
+    scanf("%d", &aluno->ano);
 
     printf("Turma [A/B/C/D/E]: ");
-    scanf(" %[^\n]",aluno->turma);
+    scanf(" %[^\n]", aluno->turma);
 
     printf("\nAluno cadastrado:\n");
-    printf("Nome: %s\nMatricula: %s\nEndereco: %s\nCPF: %s\nData de nascimento: %s\nTurma: %s\n",aluno->nome,aluno->matricula,aluno->endereco,aluno->cpf,aluno->data_nascimento,aluno->turma);
+    printf("Nome: %s\nMatricula: %s\nEndereco: %s\nCPF: %s\nData de nascimento: %s\nAno: %d\nTurma: %s\n", aluno->nome, aluno->matricula, aluno->endereco, aluno->cpf, aluno->data_nascimento, aluno->ano, aluno->turma);
 
     printf("Status: %s\nPossui pendências: ", aluno->status);
         if (aluno->possui_pendencias) 
@@ -234,6 +240,9 @@ void cadastrar_aluno(Aluno *aluno) {
 //    sprintf(nome_arquivo, "aluno_%d.txt", aluno->id);
 //isso era pra fazer um arquivo por aluno
 //    printf("Matricula que será gravada: %s\n", aluno->matricula); Coloquei isso no 'aluno cadastrado'
+
+    calcular_situacao(aluno);
+
     arquivo_aluno(aluno, "alunos.txt");
 
     alunos[total_alunos] = *aluno;
@@ -542,11 +551,13 @@ void arquivo_aluno(const Aluno *aluno, const char *alunosss) {
     fprintf(fp, "Endereco: %s\n", aluno->endereco);
     fprintf(fp, "CPF: %s\n", aluno->cpf);
     fprintf(fp, "Data de nascimento: %s\n", aluno->data_nascimento);
+    fprintf(fp, "Ano: %d\n", aluno->ano);
     fprintf(fp, "Turma: %s\n", aluno->turma);
     fprintf(fp, "Status: %s\n", aluno->status);
     fprintf(fp, "Possui pendencias: %s\n", aluno->possui_pendencias ? "Sim" : "Nao");
     fprintf(fp, "Faltas: %d\n", aluno->faltas);
     fprintf(fp, "Notas: %.2f %.2f %.2f %.2f\n", aluno->notas[0],aluno->notas[1],aluno->notas[2],aluno->notas[3]);
+    fprintf(fp, "Situacao: %s\n", aluno->situacao);
     fprintf(fp, "------------------------\n");
 
     fclose(fp);
@@ -556,6 +567,10 @@ void arquivo_aluno(const Aluno *aluno, const char *alunosss) {
 
 //Salvar status novos no arquivo Write
 void salvar_alunos_em_arquivo(void) {
+    for (int i = 0; i < total_alunos; i++) {
+        calcular_situacao(&alunos[i]);
+    }
+    
     FILE *fp = fopen("alunos.txt", "w");
     if (!fp) {
         perror("Erro ao abrir arquivo para salvar");
@@ -568,11 +583,13 @@ void salvar_alunos_em_arquivo(void) {
         fprintf(fp, "Endereco: %s\n", alunos[i].endereco);
         fprintf(fp, "CPF: %s\n", alunos[i].cpf);
         fprintf(fp, "Data de nascimento: %s\n", alunos[i].data_nascimento);
+        fprintf(fp, "Ano: %d\n", alunos[i].ano);
         fprintf(fp, "Turma: %s\n", alunos[i].turma);
         fprintf(fp, "Status: %s\n", alunos[i].status);
         fprintf(fp, "Possui pendencias: %s\n", alunos[i].possui_pendencias ? "Sim" : "Nao");
         fprintf(fp, "Faltas: %d\n", alunos[i].faltas);
         fprintf(fp, "Notas: %.2f %.2f %.2f %.2f\n", alunos[i].notas[0], alunos[i].notas[1], alunos[i].notas[2], alunos[i].notas[3]);
+        fprintf(fp, "Situacao: %s\n", alunos[i].situacao);
         fprintf(fp, "------------------------------\n");
     }
     fclose(fp);
@@ -647,12 +664,14 @@ void exibir_dados_aluno(const Aluno *a) {
     printf("CPF: %s\n", a->cpf);
     printf("Endereco: %s\n", a->endereco);
     printf("Data de nascimento: %s\n", a->data_nascimento);
+    printf("Ano: %d\n", a->ano);
     printf("Turma: %s\n", a->turma);
     printf("Status: %s\n", a->status);
     printf("Possui pendências: %s\n", a->possui_pendencias ? "Sim" : "Não");
     printf("Faltas: %d\n", a->faltas);
-    printf("Notas: %.2f %.2f %.2f %.2f\n",
-           a->notas[0], a->notas[1], a->notas[2], a->notas[3]);
+    printf("Notas: %.2f %.2f %.2f %.2f\n", a->notas[0], a->notas[1], a->notas[2], a->notas[3]);
+    printf("Situacao: %s\n", a->situacao);
+    printf("------------------------------\n");
 }
 
 void visualizar_aluno_buscado(void) {
@@ -671,7 +690,6 @@ void visualizar_aluno_buscado(void) {
 }
 
 void gerar_boletim_aluno(const Aluno *a) {
-    // Verificar se todas as notas são zero
     int todas_zero = 1;
     for (int i = 0; i < 4; i++) {
         if (a->notas[i] != 0.0f) {
@@ -685,30 +703,37 @@ void gerar_boletim_aluno(const Aluno *a) {
         return;
     }
 
-    // Mostrar boletim formatado
     printf("\n=== Boletim do Aluno ===\n");
     printf("Nome: %s\n", a->nome);
     printf("Matrícula: %s\n", a->matricula);
+    printf("Ano: %d\n\n", a->ano);
     printf("Turma: %s\n\n", a->turma);
 
     printf("Notas:\n");
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 40; i++) {
         printf("Nota %d: %.2f\n", i + 1, a->notas[i]);
     }
 
-    // Calcular e mostrar a média
     float soma = 0.0f;
+    int cont = 0;
     for (int i = 0; i < 4; i++) {
-        soma += a->notas[i];
+        if (a->notas[i] != 0.0f) {
+            soma += a->notas[i];
+            cont++;
+        }
     }
-    float media = soma / 4.0f;
+
+    float media = cont > 0 ? soma / cont : 0.0f;
+
     printf("\nMédia final: %.2f\n", media);
+    printf("Situação: %s\n", a->situacao);
 
     if (media >= 6.0f) {
         printf("Status: Aprovado\n");
     } else {
-        printf("Status: Reprovado\n");
-    }
+            printf("Status: Reprovado\n");
+        }
+    
     printf("=======================\n\n");
 }
 
@@ -721,28 +746,29 @@ void gerar_relatorio_alunos(const char *filtro_turma, const char *filtro_status,
         Aluno *a = &alunos[i];
 
         // Verificar filtro de turma
-        if (filtro_turma != NULL && strlen(filtro_turma) > 0 && strcmp(a->turma, filtro_turma) != 0)
-        {
+        if (filtro_turma != NULL && strlen(filtro_turma) > 0 && strcmp(a->turma, filtro_turma) != 0) {
             continue;
         }
 
         // Verificar filtro de status
-        if (filtro_status != NULL && strlen(filtro_status) > 0 && strcmp(a->status, filtro_status) != 0)
-        {
+        if (filtro_status != NULL && strlen(filtro_status) > 0 && strcmp(a->status, filtro_status) != 0) {
             continue;
         }
 
         // Verificar filtro de pendências
-        if (filtrar_pendencias && !a->possui_pendencias)
-        {
+        if (filtrar_pendencias && !a->possui_pendencias) {
             continue;
         }
 
-        printf("Nome: %s\nCPF: %s\nEndereco: %s\nTurma: %s\nStatus: %s\nPendencias: %s\nFaltas: %d\nNotas: %.2f %.2f %.2f %.2f\n----------------------\n",
-               a->nome, a->cpf, a->endereco, a->turma, a->status,
-               a->possui_pendencias ? "Sim" : "Não",
-               a->faltas,
-               a->notas[0], a->notas[1], a->notas[2], a->notas[3]);
+        printf("Nome: %s\nCPF: %s\nEndereco: %s\nAno: %d\nTurma: %s\nStatus: %s\nPendencias: %s\nFaltas: %d\nNotas: %.2f %.2f %.2f %.2f\n----------------------\n",
+               a->nome, a->cpf, a->endereco, a->ano, a->turma, a->status, a->possui_pendencias ? "Sim" : "Não", a->faltas, a->notas[0], a->notas[1], a->notas[2], a->notas[3]);
+
+        for (int j = 0; j < 4; j++) {
+            printf(" %.2f", a->notas[j]);
+        }
+
+        printf("\n----------------------\n");
+
     }
 }
 

@@ -18,12 +18,14 @@ typedef struct { //Todas as infos são declaradas aqui, mesmo que não sejam uti
     char endereco[400];
     char cpf[30];
     char data_nascimento[24];
+    int ano;
     char turma[4]; //A, B, C, D ou E
     char status[20]; //"ativo" ou "inativo"
     int possui_pendencias; //1 para sim, 0 para não
 
     int faltas;
-    float notas[40];  
+    float notas[4];
+    char situacao[20];
 } Aluno;
 
 extern Aluno alunos[MAX_ALUNOS];

@@ -2,7 +2,8 @@
     "C_Cpp.errorSquiggles": "enabled",
     "files.associations": {
         "admin.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "menu.h": "c"
     },
     "C_Cpp.copilotHover": "disabled",
     "github.copilot.enable": {

@@ -78,33 +78,55 @@ def abrir_relatorios(janela, text_area, verificar_conteudo):
 def mostrar_alunos():
     try:
         with open('../alunos.txt', 'r', encoding='utf-8') as f:
+
             conteudo_formatado = ""
-            nome = matricula = turma = None
+            conteudo_formatado += f"{'Nome':<20} {'Matricula':<10} {'Ano':<4} {'Turma':<6}\n"
+            conteudo_formatado += "-"*44 + "\n"
 
-            # cabeçalho alinhado
-            conteudo_formatado += f"{'Nome':<20} {'Matrícula':<10} {'Turma':<6}\n"
-            conteudo_formatado += "-"*40 + "\n"
+            aluno_linhas = []
+            while True:
+                linha = f.readline()
+                if not linha:  # fim do arquivo
+                    break
+                linha = linha.rstrip('\n')
 
-            for linha in f:
-                linha = linha.strip()
-                if linha.startswith("Nome:"):
-                    if nome and matricula and turma:
-                        conteudo_formatado += f"{nome[6:]:<20} {matricula[10:]:<10} {turma[6:]:<6}\n"
-                    nome = linha
-                    matricula = turma = None
-                elif linha.startswith("Matricula:"):
-                    matricula = linha
-                elif linha.startswith("Turma:"):
-                    turma = linha
+                if linha == '------------------------------':
+                    # Processa o bloco de linhas do aluno atual
+                    campos = {'Nome': None, 'Matricula': None, 'Ano': None, 'Turma': None}
+                    for l in aluno_linhas:
+                        l = l.strip()
+                        for campo in campos.keys():
+                            if l.startswith(f"{campo}:"):
+                                valor = l.split(": ", 1)[1].strip()
+                                if campo == 'Ano':
+                                    try:
+                                        valor = int(valor)
+                                    except:
+                                        pass
+                                campos[campo] = valor
+                    # Adiciona ao texto final se tiver nome e matricula
+                    if campos['Nome'] and campos['Matricula']:
+                        ano_val = campos['Ano'] if campos['Ano'] is not None else "?"
+                        turma_val = campos['Turma'] if campos['Turma'] is not None else "?"
+                        conteudo_formatado += f"{campos['Nome']:<20} {campos['Matricula']:<10} {ano_val:<4} {turma_val:<6}\n"
+                    aluno_linhas = []  # reseta para próximo aluno
 
-            # ultimo aluno
-            if nome and matricula and turma:
-                conteudo_formatado += f"{nome[6:]:<20} {matricula[10:]:<10} {turma[6:]:<6}\n"
+                    # Olha se a próxima linha começa com ID para continuar ou não
+                    pos_atual = f.tell()
+                    prox_linha = f.readline()
+                    if not prox_linha:  # fim do arquivo, sai
+                        break
+                    if not prox_linha.startswith('ID:'):
+                        # não tem mais aluno, para
+                        break
+                    else:
+                        # tem mais alunos, volta uma linha para ler normalmente
+                        f.seek(pos_atual)
 
-        return conteudo_formatado if conteudo_formatado else "Nenhum aluno encontrado."
+                else:
+                    aluno_linhas.append(linha)
 
+        return conteudo_formatado
     except FileNotFoundError:
         return "Arquivo não encontrado."
-
-
 

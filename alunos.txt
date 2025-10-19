@@ -1,84 +1,56 @@
 ID: 1
 Matricula: 0001
-Nome: Carlos
-Endereco: 1
-CPF: 1
-Data de nascimento: 1
-Turma: C
-Status: inativo
+Nome: Hayley
+Endereco: 12
+CPF: 12
+Data de nascimento: 12
+Ano: 9
+Turma: A
+Status: ativo
 Possui pendencias: Nao
-Faltas: 94
-Notas: 1.00 1.00 1.00 1.00
+Faltas: 10
+Notas: 10.00 10.00 9.00 10.00
+Situacao: aprovado
 ------------------------------
 ID: 2
 Matricula: 0002
-Nome: Aline
-Endereco: 2
-CPF: 2
-Data de nascimento: 2
-Turma: A
-Status: ativo
+Nome: Tove Lo
+Endereco: 12
+CPF: 12
+Data de nascimento: 12
+Ano: 8
+Turma: B
+Status: inativo
 Possui pendencias: Nao
-Faltas: 0
-Notas: 2.00 2.00 2.00 2.00
+Faltas: 26
+Notas: 6.00 7.00 8.00 6.00
+Situacao: reprovado
 ------------------------------
 ID: 3
 Matricula: 0003
-Nome: Maicon
+Nome: Meduza
 Endereco: 12
 CPF: 12
 Data de nascimento: 12
-Turma: E
-Status: inativo
-Possui pendencias: Nao
-Faltas: 0
-Notas: 3.00 3.00 3.00 3.00
-------------------------------
-ID: 4
-Matricula: 0004
-Nome: Taylor
-Endereco: Swift
-CPF: 12
-Data de nascimento: 12
-Turma: B
-Status: ativo
-Possui pendencias: Nao
-Faltas: 0
-Notas: 4.00 4.00 4.00 4.00
-------------------------------
-ID: 5
-Matricula: 0005
-Nome: Ju
-Endereco: 12
-CPF: 12
-Data de nascimento: 12
+Ano: 7
 Turma: C
 Status: ativo
 Possui pendencias: Nao
-Faltas: 0
-Notas: 5.00 5.00 5.00 5.00
+Faltas: 50
+Notas: 4.00 5.00 6.00 7.00
+Situacao: reprovado
 ------------------------------
-ID: 6
-Matricula: 0006
-Nome: Mouse
-Endereco: 19
-CPF: 19
-Data de nascimento: 1
-Turma: A
-Status: inativo
-Possui pendencias: Nao
-Faltas: 0
-Notas: 6.00 6.00 6.00 6.00
-------------------------------
-ID: 7
-Matricula: 0007
-Nome: Gustavo
+ID: 4
+Matricula: 0004
+Nome: Two Door
 Endereco: 12
 CPF: 12
 Data de nascimento: 12
+Ano: 5
 Turma: D
 Status: ativo
 Possui pendencias: Nao
-Faltas: 0
-Notas: 3.00 4.00 5.00 6.00
+Faltas: 4
+Notas: 8.00 9.00 5.00 8.00
+Situacao: aprovado
 ------------------------------
