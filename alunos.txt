@@ -1,60 +1,84 @@
 ID: 1
-Matricula: 0006
+Matricula: 0001
 Nome: Carlos
-Endereco: Rua
-CPF: 12
-Data de nascimento: 04081994
+Endereco: 1
+CPF: 1
+Data de nascimento: 1
 Turma: C
-Status: ativo
+Status: inativo
 Possui pendencias: Nao
 Faltas: 0
-Notas: 1.00 2.00 3.00 4.00
+Notas: 1.00 1.00 1.00 1.00
 ------------------------------
 ID: 2
-Matricula: 0007
-Nome: Daniel
-Endereco: Rua
-CPF: 12
-Data de nascimento: 14071999
-Turma: D
-Status: ativo
-Possui pendencias: Nao
-Faltas: 0
-Notas: 0.00 0.00 0.00 0.00
-------------------------------
-ID: 3
-Matricula: 0008
+Matricula: 0002
 Nome: Aline
-Endereco: Rua
-CPF: 12
-Data de nascimento: 13101986
+Endereco: 2
+CPF: 2
+Data de nascimento: 2
 Turma: A
 Status: ativo
 Possui pendencias: Nao
 Faltas: 0
-Notas: 0.00 0.00 0.00 0.00
+Notas: 2.00 2.00 2.00 2.00
 ------------------------------
-ID: 4
-Matricula: 0009
-Nome: Otavio
-Endereco: Rua
+ID: 3
+Matricula: 0003
+Nome: Maicon
+Endereco: 12
 CPF: 12
-Data de nascimento: 28091994
+Data de nascimento: 12
 Turma: E
 Status: ativo
 Possui pendencias: Nao
 Faltas: 0
-Notas: 0.00 0.00 0.00 0.00
+Notas: 3.00 3.00 3.00 3.00
 ------------------------------
-ID: 5
-Matricula: 0010
-Nome: Joao
-Endereco: Rua
+ID: 4
+Matricula: 0004
+Nome: Taylor
+Endereco: Swift
 CPF: 12
-Data de nascimento: 23111994
+Data de nascimento: 12
 Turma: B
 Status: ativo
 Possui pendencias: Nao
 Faltas: 0
-Notas: 0.00 0.00 0.00 0.00
+Notas: 4.00 4.00 4.00 4.00
+------------------------------
+ID: 5
+Matricula: 0005
+Nome: Ju
+Endereco: 12
+CPF: 12
+Data de nascimento: 12
+Turma: C
+Status: ativo
+Possui pendencias: Nao
+Faltas: 0
+Notas: 5.00 5.00 5.00 5.00
+------------------------------
+ID: 6
+Matricula: 0006
+Nome: Mouse
+Endereco: 19
+CPF: 19
+Data de nascimento: 1
+Turma: A
+Status: inativo
+Possui pendencias: Nao
+Faltas: 0
+Notas: 6.00 6.00 6.00 6.00
+------------------------------
+ID: 7
+Matricula: 0007
+Nome: Gustavo
+Endereco: 12
+CPF: 12
+Data de nascimento: 12
+Turma: D
+Status: ativo
+Possui pendencias: Nao
+Faltas: 0
+Notas: 3.00 4.00 5.00 6.00
 ------------------------------

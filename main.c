@@ -4,8 +4,7 @@
 #include "menu.h" //aqui moram as opções de menu
 
 //Definindo coisas
-
-int proximo_id = 1; //ID do aluno
+int proximo_id = 1; // ID do aluno
 
 typedef struct
 {
@@ -41,6 +40,7 @@ void login(dados_usuario *u) {
 }
 
 int main(){
+    carregar_contador_id(); // para inicializar o proximo_id do arquivo
     total_alunos = ler_alunos_de_arquivo(alunos, MAX_ALUNOS);
 
     dados_usuario usuarioAtual; //essa aqui guarda os dados da função

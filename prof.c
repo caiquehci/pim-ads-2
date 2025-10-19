@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include "prof.h"
+#include "admin.h"
+#include "menu.h"
 
 void atribuir_notas(Aluno *aluno, int num_alunos) {
     if (num_alunos == 0) {

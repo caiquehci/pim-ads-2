@@ -171,7 +171,7 @@ int ler_alunos_de_arquivo(Aluno alunos[], int max_alunos)
                     sscanf(p, "%d", &alunos[i].faltas);
                     break;
                 case 9:
-                    sscanf(p, "Notas: %f %f %f %f",
+                    sscanf(p, "%f %f %f %f",
                            &alunos[i].notas[0],
                            &alunos[i].notas[1],
                            &alunos[i].notas[2],
@@ -191,7 +191,10 @@ int ler_alunos_de_arquivo(Aluno alunos[], int max_alunos)
 
 //Cadastrar aluno, clássico
 void cadastrar_aluno(Aluno *aluno) {
-    aluno->id = proximo_id++;
+    
+    gerar_matricula_aluno(aluno->matricula); // recém criado pra poupar serviço no menu
+
+    gerar_id_aluno(&aluno->id);
 
     strcpy(aluno->status, "ativo"); //Começa como ativo
     aluno->possui_pendencias = 0; //Começa sem pendências
@@ -206,9 +209,7 @@ void cadastrar_aluno(Aluno *aluno) {
     printf("Nome: ");
     scanf(" %[^\n]",aluno->nome); //ler com espaço até ENTER
     
-    gerar_matricula_aluno(aluno->matricula); // recém criado pra poupar serviço no menu
-
-    printf("Endereço: ");
+    printf("Endereco: ");
     scanf(" %[^\n]",aluno->endereco);
 
     printf("CPF: ");
@@ -221,7 +222,7 @@ void cadastrar_aluno(Aluno *aluno) {
     scanf(" %[^\n]",aluno->turma);
 
     printf("\nAluno cadastrado:\n");
-    printf("Nome: %s\nMatricula: %s\nEndereço: %s\nCPF: %s\nData de nascimento: %s\nTurma: %s\n",aluno->nome,aluno->matricula,aluno->endereco,aluno->cpf,aluno->data_nascimento,aluno->turma);
+    printf("Nome: %s\nMatricula: %s\nEndereco: %s\nCPF: %s\nData de nascimento: %s\nTurma: %s\n",aluno->nome,aluno->matricula,aluno->endereco,aluno->cpf,aluno->data_nascimento,aluno->turma);
 
     printf("Status: %s\nPossui pendências: ", aluno->status);
         if (aluno->possui_pendencias) 
@@ -234,32 +235,69 @@ void cadastrar_aluno(Aluno *aluno) {
 //isso era pra fazer um arquivo por aluno
 //    printf("Matricula que será gravada: %s\n", aluno->matricula); Coloquei isso no 'aluno cadastrado'
     arquivo_aluno(aluno, "alunos.txt");
+
+    alunos[total_alunos] = *aluno;
+    total_alunos++;
 }
 
-void gerar_matricula_aluno(char matricula[]) {
-    FILE *f = fopen("contador_matricula.txt", "r+");
-    int numero = 1;
+//Gerar ID pq toda vez que recompila o ID reseta
+void gerar_id_aluno(int *id)
+{
+    FILE *f = fopen("contador_id.txt", "r+");
+    int numero;
 
-    if (f != NULL) {
-        if (fscanf(f, "%d", &numero) != 1) {
-            numero = 1;
-        }
-
-        rewind(f);
-        fprintf(f, "%d", numero + 1); 
-        fclose(f);
-    } else {
-        f = fopen("contador_matricula.txt", "w");
-        if (f == NULL) {
-            fprintf(stderr, "Erro ao abrir arquivo de contador.\n");
+    if (f == NULL)
+    {
+        // Se o arquivo não existir, cria e inicializa com 1
+        f = fopen("contador_id.txt", "w+");
+        if (f == NULL)
+        {
+            fprintf(stderr, "Erro ao criar contador_id.txt\n");
             return;
         }
-        
-        fprintf(f, "%d", 1);
+        numero = 1;
+    }
+    else
+    {
+        // Tenta ler o valor salvo
+        if (fscanf(f, "%d", &numero) != 1)
+            numero = 1;
+    }
+
+    *id = numero;
+
+    // Volta para o início e zera o arquivo antes de escrever
+    freopen("contador_id.txt", "w", f); // reabre o arquivo em modo de escrita limpa
+    fprintf(f, "%d", numero + 1);
+    fflush(f);
+    fclose(f);
+}
+
+void gerar_matricula_aluno(char matricula[])
+{
+    FILE *f = fopen("contador_matricula.txt", "r");
+    int numero = 1;
+
+    if (f != NULL)
+    {
+        if (fscanf(f, "%d", &numero) != 1)
+        {
+            numero = 1;
+        }
         fclose(f);
     }
 
     snprintf(matricula, 5, "%04d", numero);
+
+    // Abre o arquivo em modo escrita truncando para atualizar o contador
+    f = fopen("contador_matricula.txt", "w");
+    if (f == NULL)
+    {
+        fprintf(stderr, "Erro ao abrir arquivo de contador de matrícula para escrita.\n");
+        return;
+    }
+    fprintf(f, "%d", numero + 1);
+    fclose(f);
 }
 
 //
@@ -378,13 +416,43 @@ void salvar_professores_em_arquivo(void) {
 
 //Carregar todos os professores do arquivo
 int carregar_professores_de_arquivo(void);
-
 //
-
 
 
 // Complexos :::::::::::::::::::::::::::::::::::::::::::::::
 //
+
+//ID SOS
+void atualizar_proximo_id()
+{
+    int maior_id = 0;
+    for (int i = 0; i < total_alunos; i++)
+    {
+        if (alunos[i].id > maior_id)
+        {
+            maior_id = alunos[i].id;
+        }
+    }
+    proximo_id = maior_id + 1;
+}
+
+void carregar_contador_id()
+{
+    FILE *f = fopen("contador_id.txt", "r");
+    if (f != NULL)
+    {
+        if (fscanf(f, "%d", &proximo_id) != 1)
+        {
+            proximo_id = 1; // se falhar leitura, reinicia em 1
+        }
+        fclose(f);
+    }
+    else
+    {
+        proximo_id = 1; // arquivo não existe, inicia em 1
+    }
+}
+
 // Buscar aluno por id
 int buscar_aluno_por_id(int id) {
     for (int i = 0; i < total_alunos; i++) {
@@ -396,28 +464,56 @@ int buscar_aluno_por_id(int id) {
 }
 
 //Buscar aluno e alterar status pelo seu id
-void alterar_status_aluno_por_id() {
-    int id;
-    char novo_status[10];
+void alterar_status_aluno_por_id()
+{
+    if (total_alunos == 0)
+    {
+        total_alunos = ler_alunos_de_arquivo(alunos, MAX_ALUNOS);
+        if (total_alunos == 0)
+        {
+            printf("Nenhum aluno cadastrado no sistema.\n");
+            return;
+        }
+    }
 
-    printf("Digite o ID do aluno: ");
-    scanf("%d",&id);
+    printf("\nLista de alunos disponíveis:\n");
+    printf("ID | Nome               | CPF             | Status\n");
+    printf("-----------------------------------------------\n");
+    for (int i = 0; i < total_alunos; i++) {
+        printf("%-2d | %-18s | %-15s | %-10s\n",
+               alunos[i].id,
+               alunos[i].nome,
+               alunos[i].cpf,
+               alunos[i].status);
+        }
+
+    int escolha;
+    printf("Digite o número do aluno para alterar o status (0 para sair): ");
+    scanf("%d", &escolha);
     getchar();
 
-    int idx = buscar_aluno_por_id(id);
-
-    if (idx == -1) {
-        printf("Aluno não encontrado.\n");
+    if (escolha == 0)
+    {
+        printf("Saindo da alteração de status.\n");
         return;
     }
 
-    printf("Novos status: ");
+    int indice = escolha - 1;
+    if (indice < 0 || indice >= total_alunos)
+    {
+        printf("Aluno inexistente.\n");
+        return;
+    }
+
+    char novo_status[10];
+    printf("Digite o novo status para %s: ", alunos[indice].nome);
     scanf("%9s", novo_status);
     getchar();
 
-    alterar_status_aluno(&alunos[idx], novo_status);
-
+    alterar_status_aluno(&alunos[indice], novo_status);
     salvar_alunos_em_arquivo();
+
+    printf("Status alterado para %s com sucesso.\n", alunos[indice].nome);
 }
 
 //Alterar status do aluno
@@ -515,7 +611,6 @@ int buscar_aluno_nome_matr(const char *entrada, Aluno *aluno_encontrado)
         }
         else if (sscanf(linha, "Matricula: %15[^\n]", temp.matricula) == 1)
         {
-            printf("Debug Matricula lida: '%s'\n", temp.matricula);
             continue;
         }
         else if (sscanf(linha, "Nome: %99[^\n]", temp.nome) == 1)
@@ -526,7 +621,7 @@ int buscar_aluno_nome_matr(const char *entrada, Aluno *aluno_encontrado)
         {
             continue;
         }
-        else if (sscanf(linha, "Endereço: %99[^\n]", temp.endereco) == 1)
+        else if (sscanf(linha, "Endereco: %99[^\n]", temp.endereco) == 1)
         {
             continue;
         }
@@ -575,7 +670,7 @@ void exibir_dados_aluno(const Aluno *a) {
     printf("Matricula: %s\n", a->matricula);
     printf("Nome: %s\n", a->nome);
     printf("CPF: %s\n", a->cpf);
-    printf("Endereço: %s\n", a->endereco);
+    printf("Endereco: %s\n", a->endereco);
     printf("Data de nascimento: %s\n", a->data_nascimento);
     printf("Turma: %s\n", a->turma);
     printf("Status: %s\n", a->status);

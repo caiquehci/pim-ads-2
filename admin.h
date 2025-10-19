@@ -7,6 +7,7 @@
 
 extern int num_turmas;
 extern int total_alunos;
+extern int proximo_id;
 
 //Estrutura de aluno
 typedef struct { //Todas as infos são declaradas aqui, mesmo que não sejam utilizadas em todas as funções. Bom que centraliza tudo
@@ -55,8 +56,14 @@ void mostrar_turmas(void);
 void excluir_turmas(void);
 
 ////Aluno :::::::::::::::::::::::::::::::::::::::::::::::
+int ler_alunos_de_arquivo(Aluno alunos[], int max_alunos);
 void cadastrar_aluno(Aluno *aluno);
+void gerar_id_aluno(int *id);
+void carregar_contador_id(void);
+void salvar_contador_id(void);
+void gerar_id_aluno(int *id);
 void gerar_matricula_aluno(char matricula[]);
+void mostrar_lista_alunos();
 void alterar_status_aluno(Aluno *aluno, const char *novo_status);
 void alterar_status_aluno_por_id(void);
 int buscar_aluno_por_id(int id);
