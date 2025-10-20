@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import simpledialog
-from tkinter import scrolledtext
+
 
 def ler_arquivo_max():
     try:
@@ -78,55 +78,42 @@ def abrir_relatorios(janela, text_area, verificar_conteudo):
 def mostrar_alunos():
     try:
         with open('../alunos.txt', 'r', encoding='utf-8') as f:
-
+            nome = matricula = turma = ano = None
             conteudo_formatado = ""
             conteudo_formatado += f"{'Nome':<20} {'Matricula':<10} {'Ano':<4} {'Turma':<6}\n"
             conteudo_formatado += "-"*44 + "\n"
 
-            aluno_linhas = []
-            while True:
-                linha = f.readline()
-                if not linha:  # fim do arquivo
-                    break
-                linha = linha.rstrip('\n')
+            for linha in f:
+                linha = linha.strip()
+                if not linha:
+                    continue
 
-                if linha == '------------------------------':
-                    # Processa o bloco de linhas do aluno atual
-                    campos = {'Nome': None, 'Matricula': None, 'Ano': None, 'Turma': None}
-                    for l in aluno_linhas:
-                        l = l.strip()
-                        for campo in campos.keys():
-                            if l.startswith(f"{campo}:"):
-                                valor = l.split(": ", 1)[1].strip()
-                                if campo == 'Ano':
-                                    try:
-                                        valor = int(valor)
-                                    except:
-                                        pass
-                                campos[campo] = valor
-                    # Adiciona ao texto final se tiver nome e matricula
-                    if campos['Nome'] and campos['Matricula']:
-                        ano_val = campos['Ano'] if campos['Ano'] is not None else "?"
-                        turma_val = campos['Turma'] if campos['Turma'] is not None else "?"
-                        conteudo_formatado += f"{campos['Nome']:<20} {campos['Matricula']:<10} {ano_val:<4} {turma_val:<6}\n"
-                    aluno_linhas = []  # reseta para próximo aluno
+                if linha.startswith("Nome:"):
+                    nome = linha.split(": ", 1)[1]
+                elif linha.startswith("Matricula:"):
+                    matricula = linha.split(": ", 1)[1]
+                elif linha.startswith("Ano:"):
+                    ano_str = linha.split(": ", 1)[1]
+                    try:
+                        ano = int(ano_str)
+                    except:
+                        ano = ano_str or "?"
+                elif linha.startswith("Turma:"):
+                    turma = linha.split(": ", 1)[1]
+                elif linha == "------------------------------":
+                    # Adiciona o aluno no resultado assim que encontra a linha separadora
+                    if nome is not None and matricula is not None:
+                        ano_val = ano if ano is not None else "?"
+                        turma_val = turma if turma is not None else "?"
+                        conteudo_formatado += f"{nome:<20} {matricula:<10} {ano_val:<4} {turma_val:<6}\n"
+                    nome = matricula = turma = ano = None  # reseta para próximo aluno
 
-                    # Olha se a próxima linha começa com ID para continuar ou não
-                    pos_atual = f.tell()
-                    prox_linha = f.readline()
-                    if not prox_linha:  # fim do arquivo, sai
-                        break
-                    if not prox_linha.startswith('ID:'):
-                        # não tem mais aluno, para
-                        break
-                    else:
-                        # tem mais alunos, volta uma linha para ler normalmente
-                        f.seek(pos_atual)
-
-                else:
-                    aluno_linhas.append(linha)
+            # Caso o último aluno não tenha linha separadora, adiciona depois do loop
+            if nome is not None and matricula is not None:
+                ano_val = ano if ano is not None else "?"
+                turma_val = turma if turma is not None else "?"
+                conteudo_formatado += f"{nome:<20} {matricula:<10} {ano_val:<4} {turma_val:<6}\n"
 
         return conteudo_formatado
     except FileNotFoundError:
         return "Arquivo não encontrado."
-

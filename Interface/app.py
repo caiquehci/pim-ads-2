@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import scrolledtext
 from tkinter import messagebox, filedialog
 from admin import abrir_relatorios, mostrar_alunos
+from professor import consultar_alunos, ver_notas, ver_faltas
 
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
@@ -10,14 +11,14 @@ from reportlab.pdfgen import canvas
 def tela_login():
     login_window = tk.Tk()
     login_window.title("Login")
-    login_window.geometry("300x150")
+    login_window.geometry("240x200")
 
-    tk.Label(login_window, text="Usuário (ex: nome@admin)").pack(pady=5)
-    entry_user = tk.Entry(login_window)
+    tk.Label(login_window, text="Usuário").pack(pady=12)
+    entry_user = tk.Entry(login_window, width=24)
     entry_user.pack()
 
-    tk.Label(login_window, text="Senha").pack(pady=5)
-    entry_pass = tk.Entry(login_window, show="*")
+    tk.Label(login_window, text="Senha").pack(pady=4)
+    entry_pass = tk.Entry(login_window, width=24, show="*")
     entry_pass.pack()
 
     def validar_login():
@@ -41,16 +42,29 @@ def tela_login():
         login_window.destroy()
         iniciar_app(tipo_usuario, nome_usuario)
 
-    btn_login = tk.Button(login_window, text="Entrar", command=validar_login)
-    btn_login.pack(pady=16)
+    frame_botoes = tk.Frame(login_window)
+    frame_botoes.pack(side=tk.BOTTOM, pady=16)
+
+    botao_login = tk.Button(frame_botoes, text="Entrar", command=validar_login, width=8)
+    botao_login.pack(side=tk.LEFT, pady=5, padx=(0,8))
+
+    botao_fechar = tk.Button(frame_botoes, text="Sair", command=login_window.destroy, width=8)
+    botao_fechar.pack(side=tk.LEFT, padx=(8,0), pady=5)
 
     login_window.mainloop()
-
 
 def iniciar_app(tipo_usuario, nome_usuario):
     global tipo
     tipo = tipo_usuario
-    criar_janela_principal(nome_usuario)
+    if tipo_usuario == "admin":
+        criar_janela_admin(nome_usuario)
+    elif tipo_usuario == "professor":
+        criar_janela_prof(nome_usuario)
+
+def logout():
+    global janela
+    janela.destroy()  #fecha a janela admin
+    tela_login() #chama login dnv
 
 #defini como global porque todo mundo vai precisar dela
 def verificar_conteudo(event=None):
@@ -60,7 +74,6 @@ def verificar_conteudo(event=None):
     else:
         botao_exportar_pdf.config(state=tk.DISABLED)
 
-
 def mostrar_alunos_interface():
     conteudo = mostrar_alunos()
     text_area.delete('1.0', tk.END)
@@ -69,8 +82,8 @@ def mostrar_alunos_interface():
     
 
 
-def exportar_para_pdf():
-    conteudo = text_area.get('1.0', 'end').strip()
+def exportar_para_pdf(text_widget):
+    conteudo = text_widget.get('1.0', 'end').strip()
     if not conteudo:
         messagebox.showwarning("Aviso", "Não há conteúdo para exportar.")
         return
@@ -101,11 +114,10 @@ def exportar_para_pdf():
         except Exception as e:
             messagebox.showerror("Erro", f"Falha ao salvar PDF: {e}")
 
-
-def criar_janela_principal(nome_usuario):
+def criar_janela_admin(nome_usuario):
     global janela, text_area, botao_exportar_pdf
     janela = tk.Tk()
-    janela.title("Interface PIM-ADS-2")
+    janela.title("Interface Administrativa PIM-ADS-2")
     janela.geometry("600x400")
 
     #CRIE O FRAME PRIMEIRO (fica fixo na esquerda da janela)
@@ -122,12 +134,16 @@ def criar_janela_principal(nome_usuario):
     botao_relatorio = tk.Button(frame_botoes, text="Gerar relatórios", command=lambda: abrir_relatorios(janela, text_area,verificar_conteudo), width=16)
     botao_relatorio.pack(pady=8)
 
-    botao_exportar_pdf = tk.Button(frame_botoes, text="Exportar para PDF", command=exportar_para_pdf, width=16)
+    botao_exportar_pdf = tk.Button(frame_botoes, text="Exportar para PDF", command=lambda: exportar_para_pdf(text_area), width=16)
     botao_exportar_pdf.pack(pady=8)
 
     #tá aqui por enquanto
     botao_limpar = tk.Button(frame_botoes, text="Limpar filtro", command=limpar_texto, width=16)
     botao_limpar.pack(pady=8)
+
+
+    botao_logout = tk.Button(frame_botoes, text="Logout", command=logout, width=16, bg="#5E0E0E", fg="white")
+    botao_logout.pack(side=tk.BOTTOM, pady=(96, 8))
 
     #Área de texto ocupando o restante da janela, à direita
     #widget
@@ -141,6 +157,44 @@ def criar_janela_principal(nome_usuario):
     verificar_conteudo()
 
     janela.mainloop()
+
+def criar_janela_prof(nome_usuario):
+    global text_area_prof, botao_exportar_pdf_prof
+    janela_prof = tk.Tk()
+    janela_prof.title("Interface Professor - PIM ADS 2")
+    janela_prof.geometry("600x400")
+
+    frame_botoes = tk.Frame(janela_prof)
+    frame_botoes.pack(side=tk.LEFT, padx=(24, 12), pady=16)
+
+    label_boas_vindas = tk.Label(frame_botoes, text=f"Bem-vindo(a), Prof {nome_usuario}!", font=("Arial", 12, "bold"))
+    label_boas_vindas.pack(pady=(24, 24))
+
+    text_area_prof = scrolledtext.ScrolledText(janela_prof, width=90, height=32)
+    text_area_prof.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(12, 24), pady=16)
+
+    botao_consultar = tk.Button(frame_botoes, text="Consultar alunos", command=lambda: [consultar_alunos(janela_prof, text_area_prof), verificar_conteudo_prof()], width=16)
+    botao_consultar.pack(pady=8)
+    botao_notas = tk.Button(frame_botoes, text="Ver notas", command=lambda: [ver_notas(janela_prof, text_area_prof), verificar_conteudo_prof()], width=16)
+    botao_notas.pack(pady=8)
+    botao_faltas = tk.Button(frame_botoes, text="Ver faltas", command=lambda: [ver_faltas(janela_prof, text_area_prof), verificar_conteudo_prof()], width=16)
+    botao_faltas.pack(pady=8)
+    
+    botao_exportar_pdf_prof = tk.Button(frame_botoes, text="Exportar para PDF", command=lambda: exportar_para_pdf(text_area_prof), width=16, state=tk.DISABLED)
+    botao_exportar_pdf_prof.pack(pady=8)
+
+    
+    def verificar_conteudo_prof(event=None):
+        if text_area_prof.get('1.0', tk.END).strip():
+            botao_exportar_pdf_prof.config(state=tk.NORMAL)
+        else:
+            botao_exportar_pdf_prof.config(state=tk.DISABLED)
+
+    text_area_prof.bind('<KeyRelease>', verificar_conteudo_prof)
+    text_area_prof.bind('<KeyRelease>', verificar_conteudo_prof)
+    verificar_conteudo_prof()
+
+    janela_prof.mainloop()
 
 
 def limpar_texto():
