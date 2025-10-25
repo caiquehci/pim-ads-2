@@ -4,6 +4,7 @@
 #include "menu.h"
 #include "prof.h"
 
+
 void run_menu(const char *tipo_usuario) {
     // chamando a lista de alunos mais atualizada, para que todos possam usar a melhor versão
     total_alunos = ler_alunos_de_arquivo(alunos, MAX_ALUNOS);
@@ -48,6 +49,7 @@ void menu_admin() {
         printf("1 - Gerenciamento de alunos\n");
         printf("2 - Gerenciamento de professores\n");
         printf("3 - Gerenciamento de turmas\n");
+        printf("4 - Gerar cadastros\n");
         printf("0 - Sair\n");
         printf("Sua opção: ");
         scanf("%d", &opcao);
@@ -74,6 +76,10 @@ void menu_admin() {
                 {
                 case 1:
                     cadastrar_aluno(&aluno);
+                    dados_usuario usuario_gerado = cadastrar_usuario_novo("aluno");
+                    printf("\nLogin de aluno criado\n");
+                    printf("Login: %s\n", usuario_gerado.login);
+                    printf("Senha: %s\n", usuario_gerado.senha);
                     break;
                 case 2:
                     alterar_status_aluno_por_id();
@@ -137,6 +143,10 @@ void menu_admin() {
                 {
                 case 1:
                     cadastrar_professor(&prof);
+                    dados_usuario usuario_gerado = cadastrar_usuario_novo("professor");
+                    printf("\nLogin de professor criado\n");
+                    printf("Login: %s\n", usuario_gerado.login);
+                    printf("Senha: %s\n", usuario_gerado.senha);
                     professores[total_professores++] = prof;
                     arquivo_professor(&prof);
                     break;
@@ -192,10 +202,32 @@ void menu_admin() {
             break;
         }
         case 4: {
-            const char *turma_filtro = "";
-            const char *status_filtro = "";
-            int filtrar_pendencias = 0;
-            gerar_relatorio_alunos(turma_filtro, status_filtro, filtrar_pendencias);
+            int op_cadastro;
+            do {
+                printf("\n :::Gerenciamento de Cadastros:::\n");
+                printf("1 - Criar login para novo professor\n");
+                printf("2 - Criar login para novo aluno\n");
+                printf("0 - Voltar ao menu anterior\n");
+                printf("Escolha: ");
+                scanf("%d", &op_cadastro);
+                getchar();
+
+                switch (op_cadastro) {
+                    case 1:
+                        cadastrar_usuario_novo("professor");
+                        printf("\nLogin de professor criado\n");
+                        break;
+                    case 2:
+                        cadastrar_usuario_novo("aluno");
+                        printf("\nLogin de aluno criado\n");
+                        break;
+                    case 0:
+                        printf("Voltando ao menu principal...\n");
+                        break;
+                    default:
+                        printf("Opção invalida.\n");
+                }
+            } while (op_cadastro != 0);
             break;
         }
         case 0:
@@ -204,6 +236,53 @@ void menu_admin() {
 
         default:
             printf("Opção inválida. Tente novamente.\n");
+        }
+    } while (opcao != 0);
+}
+
+void menu_admin_cadastro()
+{
+    int opcao;
+    Aluno aluno_temp;
+
+    do
+    {
+        printf("\n=== MENU ADMINISTRADOR ===\n");
+        printf("1. Cadastrar usuários\n");
+        printf("2. Funções administrativas\n");
+        printf("0. Sair\n");
+        printf("Escolha: ");
+        scanf("%d", &opcao);
+
+        switch (opcao)
+        {
+        case 1:
+            cadastrar_usuario_novo("professor");
+            break;
+        case 2:
+            cadastrar_usuario_novo("aluno");
+            break;
+        case 3: // listar users
+            printf("\n=== Lista de Usuários ===\n");
+            FILE *arq = fopen(ARQUIVO_USUARIOS, "r");
+            if (arq != NULL)
+            {
+                char linha[200];
+                while (fgets(linha, sizeof(linha), arq))
+                {
+                    printf("%s", linha);
+                }
+                fclose(arq);
+            }
+            break;
+        case 4:
+            cadastrar_aluno(&aluno_temp); // função lá do admin.h
+            break;
+        case 0:
+            printf("Saindo...\n");
+            break;
+        default:
+            printf("Opção inválida!\n");
         }
     } while (opcao != 0);
 }

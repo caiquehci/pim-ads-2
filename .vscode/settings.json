@@ -3,7 +3,10 @@
     "files.associations": {
         "admin.h": "c",
         "string.h": "c",
-        "menu.h": "c"
+        "menu.h": "c",
+        "stdio.h": "c",
+        "prof.h": "c",
+        "usuarios.h": "c"
     },
     "C_Cpp.copilotHover": "disabled",
     "github.copilot.enable": {

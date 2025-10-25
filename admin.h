@@ -9,6 +9,15 @@ extern int num_turmas;
 extern int total_alunos;
 extern int proximo_id;
 
+typedef struct
+{
+    char login[50]; // guarda login
+    char senha[25]; // guarda senha
+    char tipo[15];  // guarda a característica admin, professor ou aluno
+    char nome[50];
+    int id;
+} dados_usuario;
+
 //Estrutura de aluno
 typedef struct { //Todas as infos são declaradas aqui, mesmo que não sejam utilizadas em todas as funções. Bom que centraliza tudo
     int id;
@@ -50,8 +59,11 @@ typedef struct {
 
 extern Turma lista_turmas[MAX_TURMAS];
 
+dados_usuario cadastrar_usuario_novo(const char *tipo);
+void gerar_login(char *nome, const char *tipo, char *login_gerado);
+
 // funções de cadastro no sistema
-// Turma :::::::::::::::::::::::::::::::::::::::::::::::
+////Turma :::::::::::::::::::::::::::::::::::::::::::::::
 void cadastrar_turma(Turma *turma);
 void adicionar_turma(Turma *turma);
 void mostrar_turmas(void);

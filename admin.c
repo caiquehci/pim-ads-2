@@ -309,7 +309,7 @@ void gerar_matricula_aluno(char matricula[])
     fclose(f);
 }
 
-//
+
 
 
 //Professores :::::::::::::::::::::::::::::::::::::::::::::::
