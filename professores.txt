@@ -1,0 +1,30 @@
+Nome: Anivia
+CPF: 12
+Disciplina: Historia
+Email: anivia@frel
+-----------
+Nome: Olaf
+CPF: 12
+Disciplina: Educacao Fisica
+Email: olaf@frel
+-----------
+Nome: Samira
+CPF: 12
+Disciplina: Luta
+Email: samira@noxus
+-----------
+Nome: Lulu
+CPF: 12
+Disciplina: Artes
+Email: lulu@ionia
+-----------
+Nome: Kassadin
+CPF: 12
+Disciplina: Vazio
+Email: kassadin@vazio
+-----------
+Nome: kha
+CPF: 12
+Disciplina: Alimentacao
+Email: kha@vazio
+-----------

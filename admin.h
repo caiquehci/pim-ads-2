@@ -52,14 +52,16 @@ extern int total_professores;
 
 //Estrutura de turma
 typedef struct {
-    char serie[2]; // Exemplo: "1", "2" ... "N" (número do ano)
+    int ano;
+
+//    char serie[2]; // Exemplo: "1", "2" ... "N" (número do ano)
     char letra; // Letra da turma, de 'A' a 'Z'
     char nome_professor[100]; // Nome do professor responsável
 } Turma;
 
 extern Turma lista_turmas[MAX_TURMAS];
 
-dados_usuario cadastrar_usuario_novo(const char *tipo);
+dados_usuario cadastrar_usuario_novo(const char *tipo, const char *nome_aluno);
 void gerar_login(char *nome, const char *tipo, char *login_gerado);
 
 // funções de cadastro no sistema
@@ -68,6 +70,8 @@ void cadastrar_turma(Turma *turma);
 void adicionar_turma(Turma *turma);
 void mostrar_turmas(void);
 void excluir_turmas(void);
+void salvar_turmas_em_arquivo(void);
+int carregar_turmas_de_arquivo(void);
 
 ////Aluno :::::::::::::::::::::::::::::::::::::::::::::::
 int ler_alunos_de_arquivo(Aluno alunos[], int max_alunos);

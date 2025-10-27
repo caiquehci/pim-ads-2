@@ -85,18 +85,15 @@ void gerar_login(char *nome, const char *tipo, char *login_gerado)
     char nome_limpo[50];
     strcpy(nome_limpo, nome);
 
-    //Pega primeiro nome (até o espaço)
+    //pega primeiro nome (até o espaço)
     char *espaco = strchr(nome_limpo, ' ');
-    if (espaco != NULL)
-    {
+    if (espaco != NULL) {
         *espaco = '\0';
     }
 
-    // Converte para minúsculo
-    for (int i = 0; nome_limpo[i]; i++)
-    {
-        if (nome_limpo[i] >= 'A' && nome_limpo[i] <= 'Z')
-        {
+    //converte para minúsculo
+    for (int i = 0; nome_limpo[i]; i++) {
+        if (nome_limpo[i] >= 'A' && nome_limpo[i] <= 'Z') {
             nome_limpo[i] = nome_limpo[i] + 32;
         }
     }
@@ -105,8 +102,7 @@ void gerar_login(char *nome, const char *tipo, char *login_gerado)
 }
 
 //Função para gerar a senha (ID+3 primeiras letras do nome)
-void gerar_senha(int id, char *nome, char *senha_gerada)
-{
+void gerar_senha(int id, char *nome, char *senha_gerada) {
     char inicial[3] = {0};
     inicial[0] = nome[0];
     inicial[1] = nome[1];
@@ -115,11 +111,9 @@ void gerar_senha(int id, char *nome, char *senha_gerada)
 }
 
 //Novo user
-dados_usuario cadastrar_usuario_novo(const char *tipo)
-{
+dados_usuario cadastrar_usuario_novo(const char *tipo, const char *nome_aluno) {
     FILE *arquivo = fopen(ARQUIVO_USUARIOS, "a");
-    if (arquivo == NULL)
-    {
+    if (arquivo == NULL) {
         printf("Erro ao abrir arquivo!\n");
         dados_usuario vazio = {"", "", "", "", 0};
         return vazio;
@@ -129,12 +123,7 @@ dados_usuario cadastrar_usuario_novo(const char *tipo)
     char login_gerado[50];
     char senha_gerada[25];
 
-    printf("\n=== Gerar login para %s ===\n", tipo);
-    printf("Nome completo: ");
-    getchar(); //???
-    fgets(novo.nome, sizeof(novo.nome), stdin);
-    novo.nome[strcspn(novo.nome, "\n")] = '\0'; //Remove \n
-
+    strcpy(novo.nome, nome_aluno);
     strcpy(novo.tipo, tipo);
     novo.id = proximo_id++;
 
@@ -193,7 +182,11 @@ int fazer_login(dados_usuario *u)
 // identificar_tipo(u); //ao final de login, usamos a função de ver o tipo do user
 
 int main(){
-    carregar_contador_id(); //para inicializar o proximo_id do arquivo
+    carregar_professores_de_arquivo();
+    total_professores = carregar_professores_de_arquivo();
+    num_turmas = carregar_turmas_de_arquivo();
+
+    carregar_contador_id(); // para inicializar o proximo_id do arquivo
     total_alunos = ler_alunos_de_arquivo(alunos, MAX_ALUNOS);
 
     dados_usuario usuarioAtual; //essa aqui guarda os dados da função
@@ -237,6 +230,8 @@ int main(){
 
         if (strcmp(usuarioAtual.tipo, "admin") == 0) {
             printf("Bem-vindo(a), Administrador %s!\n", usuarioAtual.nome);
+            printf("Total de professores carregados: %d\n", total_professores);
+
             menu_admin();
         } else if (strcmp(usuarioAtual.tipo, "professor") == 0) {
             printf("Bem-vindo(a), Professor %s!\n", usuarioAtual.nome);

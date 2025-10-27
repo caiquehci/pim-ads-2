@@ -1,0 +1,11 @@
+admin@admin|admin123|admin|Administrador|0
+anivia@professor|An0001|professor|Anivia|1
+olaf@professor|Ol0002|professor|Olaf|2
+samira@professor|Sa0003|professor|Samira|3
+lulu@professor|Lu0004|professor|Lulu|4
+kassadin@professor|Ka0005|professor|Kassadin|5
+kha@professor|kh0006|professor|kha|6
+
+
+carlos@aluno|Ca0001|aluno|Carlos|1
+aline@aluno|Al0002|aluno|Aline|2

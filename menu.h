@@ -5,7 +5,7 @@
 
 void run_menu(const char *tipo_usuario);
 void menu_admin();
-void menu_admin_cadastro();
+//void menu_admin_cadastro(); redundante
 void menu_professor();
 void menu_aluno();
 

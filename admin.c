@@ -20,19 +20,38 @@ int total_professores = 0;
 void cadastrar_turma(Turma *turma){
     printf("Cadastre uma nova turma\n");
 
-    printf("Série (número do ano): ");
-    scanf(" %[^\n]",turma->serie);
+    printf("Ano (número do ano): ");
+    scanf(" %d",&turma->ano);
 
-    printf("Letra da turma [A-Z]: ");
+    printf("Letra da turma [A-E]: ");
     scanf(" %c",&turma->letra);
 
-    printf("Professor responsável: ");
-    scanf(" %[^\n]",turma->nome_professor);
+    printf("\nProfessores disponiveis: \n");
+    for (int i = 0; i < total_professores; i++) {
+        printf("%d - %s | %s\n", i + 1, professores[i].nome, professores[i].disciplina);
+    }
+
+    int escolha_prof;
+    printf("Escolha o professor responsavel pelo numero: \n");
+    scanf("%d", &escolha_prof);
+    getchar();
+
+    if (escolha_prof < 1 || escolha_prof > total_professores) {
+        printf("Opcao invalida. Favor tentar novamente\n");
+        return;
+    }
+
+    strcpy(turma->nome_professor, professores[escolha_prof - 1].nome);
+
+//antiga inserção manual
+//printf("Professor responsável: ");
+//scanf(" %[^\n]",turma->nome_professor);
 
     printf("\nTurma cadastrada:\n");
-    printf("Série: %s\n",turma->serie);
+    printf("Ano: %d\n",turma->ano);
     printf("Letra: %c\n",turma->letra);
     printf("Professor responsável: %s\n",turma->nome_professor);        
+
 }
 
 //Adicionar uma nova turma
@@ -49,16 +68,13 @@ void adicionar_turma(Turma *turma){
 void mostrar_turmas(void){
     if (num_turmas == 0){
         printf("Sem turmas até agora.\n");
-        printf("Vamos cadastrar a primeira\n.");
-
-        Turma nova_turma;
-        cadastrar_turma(&nova_turma);
-        adicionar_turma(&nova_turma);
-    } else {
-        printf("Lista de turmas:\n");
-        for (int i = 0; i<num_turmas; i++) {
-            printf("%d - %sª Série, Turma: %c. Professor responsável: %s\n", i+1, lista_turmas[i].serie, lista_turmas[i].letra,lista_turmas[i].nome_professor);
-        }
+        printf("Escolha a opção 'cadastrar nova turma' no menu anterior.\n");
+        return;
+    }
+    
+    printf("Lista de turmas:\n");
+    for (int i = 0; i < num_turmas; i++) {
+        printf("%d - %d Ano %c. Professor responsavel: %s\n", i + 1, lista_turmas[i].ano, lista_turmas[i].letra, lista_turmas[i].nome_professor);
     }
 }
 
@@ -92,10 +108,53 @@ void excluir_turmas(void){
     }
 
     num_turmas--;
-
+    salvar_turmas_em_arquivo();
     printf("Turma excluída.\n");
 
     mostrar_turmas();
+}
+
+//fazer um arquivo pra não precisar ficar refazendo turma toda vez que executa o programa
+void salvar_turmas_em_arquivo(void) {
+    FILE *fp = fopen("turmas.txt", "w");
+    if (!fp) {
+        perror("Erro ao abrir arquivo para salvar turmas");
+        return;
+        }   for (int i = 0; i < num_turmas; i++) {
+                fprintf(fp, "Ano: %d\n", lista_turmas[i].ano);
+                fprintf(fp, "Letra: %c\n", lista_turmas[i].letra);
+                fprintf(fp, "Professor: %s\n", lista_turmas[i].nome_professor);
+                fprintf(fp, "--------------\n");
+            }
+
+        fclose(fp);
+}
+
+//pra usar no começo da main
+int carregar_turmas_de_arquivo(void) {
+    num_turmas = 0;
+
+    FILE *fp = fopen("turmas.txt", "r");
+    if (!fp) return 0;
+
+    num_turmas = 0;
+    char linha[200];
+    
+    while (fgets(linha, sizeof(linha), fp) && num_turmas < MAX_TURMAS) {
+        Turma *t = &lista_turmas[num_turmas];
+        if (sscanf(linha, "Ano: %d", &t->ano) == 1) {
+            fgets(linha, sizeof(linha), fp);
+            sscanf(linha, "Letra: %c", &t->letra);
+            fgets(linha, sizeof(linha), fp);
+            sscanf(linha, "Professor: %[^\n]", t->nome_professor);
+            fgets(linha, sizeof(linha), fp); //linha ----------
+            
+            num_turmas++;
+        }
+    }
+
+    fclose(fp);
+    return num_turmas;
 }
 
 //
@@ -196,7 +255,6 @@ int ler_alunos_de_arquivo(Aluno alunos[], int max_alunos) {
 void cadastrar_aluno(Aluno *aluno) {
     
     gerar_matricula_aluno(aluno->matricula); // recém criado pra poupar serviço no menu
-
     gerar_id_aluno(&aluno->id);
 
     strcpy(aluno->status, "ativo"); //Começa como ativo
@@ -205,7 +263,7 @@ void cadastrar_aluno(Aluno *aluno) {
     aluno->faltas = 0;//tava dando -8927392873 faltas no .txt
     for (int i = 0; i < 4; i++){
         aluno->notas[i] = 0.0f;//mesma coisa ↑
-    } //antes era uma nota com valor fixo pra não ser lixo, agora são
+    } //antes era uma nota com valor fixo pra não ser lixo, agora são 0
 
     printf("Cadastre um novo aluno\n");
 
@@ -221,11 +279,34 @@ void cadastrar_aluno(Aluno *aluno) {
     printf("Data de nascimento (DD/MM/AAAA): ");
     scanf(" %[^\n]", aluno->data_nascimento);
 
-    printf("Ano do aluno: ");
-    scanf("%d", &aluno->ano);
+    printf("\nSelecione uma turma:\n");
+    for (int i = 0; i < num_turmas; i++) {
+        printf("%d - %d Ano %c (Professor: %s)\n",
+            i + 1,
+            lista_turmas[i].ano,
+            lista_turmas[i].letra,
+            lista_turmas[i].nome_professor);
+    }
 
-    printf("Turma [A/B/C/D/E]: ");
-    scanf(" %[^\n]", aluno->turma);
+    int escolha;
+    printf("Escolha: ");
+    scanf("%d", &escolha);
+    getchar();
+
+    if (escolha < 1 || escolha > num_turmas) {
+        printf("Opção inválida.\n");
+        return;
+    }
+
+    aluno->ano = lista_turmas[escolha - 1].ano;
+    aluno->turma[0] = lista_turmas[escolha - 1].letra;
+    aluno->turma[1] = '\0';
+
+    // antiga coleta de ano e turma manual que vai ficar automática conforme a ordenação professor → turma → aluno
+    //     printf("Ano do aluno: ");
+    //     scanf("%d", &aluno->ano);
+    //     printf("Turma [A/B/C/D/E]: ");
+    //     scanf(" %[^\n]", aluno->turma);
 
     printf("\nAluno cadastrado:\n");
     printf("Nome: %s\nMatricula: %s\nEndereco: %s\nCPF: %s\nData de nascimento: %s\nAno: %d\nTurma: %s\n", aluno->nome, aluno->matricula, aluno->endereco, aluno->cpf, aluno->data_nascimento, aluno->ano, aluno->turma);
@@ -244,6 +325,11 @@ void cadastrar_aluno(Aluno *aluno) {
     calcular_situacao(aluno);
 
     arquivo_aluno(aluno, "alunos.txt");
+
+    dados_usuario usuario_gerado = cadastrar_usuario_novo("aluno", aluno->nome);
+    printf("\nLogin de aluno criado\n");
+    printf("Loging: %s\n", usuario_gerado.login);
+    printf("Senha: %s\n", usuario_gerado.senha);
 
     alunos[total_alunos] = *aluno;
     total_alunos++;
@@ -395,8 +481,8 @@ void arquivo_professor(const Professor *prof) {
 
     fprintf(fp, "Nome: %s\n", prof->nome);
     fprintf(fp, "CPF: %s\n", prof->cpf);
-    fprintf(fp, "Disciplina %s\n", prof->disciplina);
-    fprintf(fp, "Email %s\n", prof->email);
+    fprintf(fp, "Disciplina: %s\n", prof->disciplina);
+    fprintf(fp, "Email: %s\n", prof->email);
     fprintf(fp, "-----------\n");
 
     fclose(fp);
@@ -424,7 +510,42 @@ void salvar_professores_em_arquivo(void) {
 }
 
 //Carregar todos os professores do arquivo
-int carregar_professores_de_arquivo(void);
+int carregar_professores_de_arquivo(void) {
+    FILE *fp = fopen("professores.txt", "r");
+    if (!fp) return 0;
+
+    total_professores = 0;
+    char linha[200];
+
+    // Leia o arquivo e preencha professores[]
+    while (fgets(linha, sizeof(linha), fp) && total_professores < MAX_PROFESSORES) {
+        Professor *p = &professores[total_professores];
+        // Exemplo simplificado - leia os campos necessários
+        // Ex: fscanf(fp, "Nome: %[^\n]\n", professores[total_professores].nome);
+        // e continue para CPF, disciplina, email, etc.
+
+        if (sscanf(linha, "Nome: %[^\n]", p->nome) == 1) {
+            fgets(linha, sizeof(linha), fp);
+
+            sscanf(linha, "CPF: %[^\n]", p->cpf);
+            fgets(linha, sizeof(linha), fp);
+            
+            sscanf(linha, "Disciplina: %[^\n]", p->disciplina);
+            fgets(linha, sizeof(linha), fp);
+            
+            sscanf(linha, "Email: %[^\n]", p->email);
+            //ler a linha --------- divisoria
+            fgets(linha, sizeof(linha), fp);
+
+        //Incrementa o total para cada professor lido
+        total_professores++;
+        }
+    }
+
+    fclose(fp);
+    return total_professores;
+
+}
 //
 
 

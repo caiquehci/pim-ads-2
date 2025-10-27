@@ -5,9 +5,10 @@
 #include "prof.h"
 
 
-void run_menu(const char *tipo_usuario) {
-    // chamando a lista de alunos mais atualizada, para que todos possam usar a melhor versão
-    total_alunos = ler_alunos_de_arquivo(alunos, MAX_ALUNOS);
+//função deprecada
+//  void run_menu(const char *tipo_usuario) {
+// chamando a lista de alunos mais atualizada, para que todos possam usar a melhor versão
+//total_alunos = ler_alunos_de_arquivo(alunos, MAX_ALUNOS);
 
 //DEBUG SECTION
 //    for (int i = 0; i < total_alunos; i++)
@@ -17,25 +18,18 @@ void run_menu(const char *tipo_usuario) {
 
 //    printf("DEBUG: total_alunos = %d\n", total_alunos);
 
-void gerar_relatorio_alunos(const char *filtro_turma, const char *filtro_status, int filtrar_pendencias);
+//void gerar_relatorio_alunos(const char *filtro_turma, const char *filtro_status, int filtrar_pendencias);
 
-    if (strcmp(tipo_usuario, "admin") == 0)
-    {
-        menu_admin();
-    }
-    else if (strcmp(tipo_usuario, "professor") == 0)
-    {
-        menu_professor();
-    }
-    else if (strcmp(tipo_usuario, "aluno") == 0)
-    {
-        menu_aluno();
-    }
-    else
-    {
-        printf("Tipo não cadastrado.\n");
-    }
-}
+//if (strcmp(tipo_usuario, "admin") == 0) {
+//menu_admin();
+//} else if (strcmp(tipo_usuario, "professor") == 0) {
+//menu_professor();
+//} else if (strcmp(tipo_usuario, "aluno") == 0) {
+//menu_aluno();
+//} else {
+//printf("Tipo não cadastrado.\n");
+//}
+//}
 
 void menu_admin() {
     int opcao;
@@ -55,13 +49,10 @@ void menu_admin() {
         scanf("%d", &opcao);
         getchar(); // Limpa o '\n' deixado pelo scanf
 
-        switch (opcao)
-        {
-        case 1:
-        {
+        switch (opcao) {
+        case 1: {
             int op_aluno;
-            do
-            {
+            do {
                 printf("\n :::Gerenciamento de Alunos:::\n");
                 printf("1 - Cadastrar novo aluno\n");
                 printf("2 - Alterar status do aluno\n");
@@ -72,14 +63,20 @@ void menu_admin() {
                 scanf("%d", &op_aluno);
                 getchar();
 
-                switch (op_aluno)
-                {
+                switch (op_aluno) {
                 case 1:
+                    if (total_professores == 0) {
+                        printf("Cadastre um professor antes de matricular alunos.\n");
+                        continue;
+                    }
+
+                    if (num_turmas == 0) {
+                        printf("Cadastre uma turma antes de matricular alunos.\n");
+                        continue; //volta ao menu de alunos, sem ir pro logout
+                    }
+
                     cadastrar_aluno(&aluno);
-                    dados_usuario usuario_gerado = cadastrar_usuario_novo("aluno");
-                    printf("\nLogin de aluno criado\n");
-                    printf("Login: %s\n", usuario_gerado.login);
-                    printf("Senha: %s\n", usuario_gerado.senha);
+
                     break;
                 case 2:
                     alterar_status_aluno_por_id();
@@ -143,7 +140,7 @@ void menu_admin() {
                 {
                 case 1:
                     cadastrar_professor(&prof);
-                    dados_usuario usuario_gerado = cadastrar_usuario_novo("professor");
+                    dados_usuario usuario_gerado = cadastrar_usuario_novo("professor", prof.nome);
                     printf("\nLogin de professor criado\n");
                     printf("Login: %s\n", usuario_gerado.login);
                     printf("Senha: %s\n", usuario_gerado.senha);
@@ -166,11 +163,9 @@ void menu_admin() {
             break;
         }
 
-        case 3:
-        {
+        case 3: {
             int op_turma;
-            do
-            {
+            do {
                 printf("\n :::Gerenciamento de Turmas:::\n");
                 printf("1 - Cadastrar nova turma\n");
                 printf("2 - Ver turmas cadastradas\n");
@@ -180,11 +175,18 @@ void menu_admin() {
                 scanf("%d", &op_turma);
                 getchar();
 
-                switch (op_turma)
-                {
+                switch (op_turma) {
                 case 1:
+                    if (total_professores == 0) {
+                        printf("Cadastre um professor antes de criar uma turma.\n");
+                        break;
+                    }
+
                     cadastrar_turma(&nova_turma);
-                    adicionar_turma(&nova_turma);
+                    adicionar_turma(&nova_turma); 
+                    //lista_turmas[num_turmas] = nova_turma;
+                    //num_turmas++;
+                    salvar_turmas_em_arquivo();
                     break;
                 case 2:
                     mostrar_turmas();
@@ -205,6 +207,7 @@ void menu_admin() {
             int op_cadastro;
             do {
                 printf("\n :::Gerenciamento de Cadastros:::\n");
+                printf("\n Este e um cadastro manual para convidados\n");
                 printf("1 - Criar login para novo professor\n");
                 printf("2 - Criar login para novo aluno\n");
                 printf("0 - Voltar ao menu anterior\n");
@@ -213,14 +216,28 @@ void menu_admin() {
                 getchar();
 
                 switch (op_cadastro) {
-                    case 1:
-                        cadastrar_usuario_novo("professor");
+                    case 1: {
+                        char nome_prof_temp[50];
+                        printf("Nome do professor: ");
+                        getchar();
+                        fgets(nome_prof_temp, sizeof(nome_prof_temp), stdin);
+                        nome_prof_temp[strcspn(nome_prof_temp, "\n")] = '\0';
+
+                        cadastrar_usuario_novo("professor", nome_prof_temp);
                         printf("\nLogin de professor criado\n");
                         break;
-                    case 2:
-                        cadastrar_usuario_novo("aluno");
+                    }
+                    case 2: {
+                        char nome_aluno_temp[50];
+                        printf("Nome do aluno: ");
+                        getchar();
+                        fgets(nome_aluno_temp, sizeof(nome_aluno_temp), stdin);
+                        nome_aluno_temp[strcspn(nome_aluno_temp, "\n")] = '\0';
+
+                        cadastrar_usuario_novo("aluno", nome_aluno_temp);
                         printf("\nLogin de aluno criado\n");
                         break;
+                    }
                     case 0:
                         printf("Voltando ao menu principal...\n");
                         break;
@@ -236,53 +253,6 @@ void menu_admin() {
 
         default:
             printf("Opção inválida. Tente novamente.\n");
-        }
-    } while (opcao != 0);
-}
-
-void menu_admin_cadastro()
-{
-    int opcao;
-    Aluno aluno_temp;
-
-    do
-    {
-        printf("\n=== MENU ADMINISTRADOR ===\n");
-        printf("1. Cadastrar usuários\n");
-        printf("2. Funções administrativas\n");
-        printf("0. Sair\n");
-        printf("Escolha: ");
-        scanf("%d", &opcao);
-
-        switch (opcao)
-        {
-        case 1:
-            cadastrar_usuario_novo("professor");
-            break;
-        case 2:
-            cadastrar_usuario_novo("aluno");
-            break;
-        case 3: // listar users
-            printf("\n=== Lista de Usuários ===\n");
-            FILE *arq = fopen(ARQUIVO_USUARIOS, "r");
-            if (arq != NULL)
-            {
-                char linha[200];
-                while (fgets(linha, sizeof(linha), arq))
-                {
-                    printf("%s", linha);
-                }
-                fclose(arq);
-            }
-            break;
-        case 4:
-            cadastrar_aluno(&aluno_temp); // função lá do admin.h
-            break;
-        case 0:
-            printf("Saindo...\n");
-            break;
-        default:
-            printf("Opção inválida!\n");
         }
     } while (opcao != 0);
 }

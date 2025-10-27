@@ -1,0 +1,28 @@
+ID: 1
+Matricula: 0001
+Nome: Carlos
+Endereco: Rua
+CPF: 43717451804
+Data de nascimento: 04/08/1994
+Ano: 8
+Turma: C
+Status: ativo
+Possui pendencias: Nao
+Faltas: 26
+Notas: 10.00 9.00 8.00 7.00
+Situacao: reprovado
+------------------------------
+ID: 2
+Matricula: 0002
+Nome: Aline
+Endereco: Rua
+CPF: 12
+Data de nascimento: 13/10/1986
+Ano: 9
+Turma: E
+Status: ativo
+Possui pendencias: Nao
+Faltas: 4
+Notas: 10.00 9.00 10.00 9.00
+Situacao: aprovado
+------------------------------
