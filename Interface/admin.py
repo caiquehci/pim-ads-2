@@ -101,14 +101,14 @@ def mostrar_alunos():
                 elif linha.startswith("Turma:"):
                     turma = linha.split(": ", 1)[1]
                 elif linha == "------------------------------":
-                    # Adiciona o aluno no resultado assim que encontra a linha separadora
+                    #adiciona o aluno no resultado assim que encontra a linha separadora
                     if nome is not None and matricula is not None:
                         ano_val = ano if ano is not None else "?"
                         turma_val = turma if turma is not None else "?"
                         conteudo_formatado += f"{nome:<20} {matricula:<10} {ano_val:<4} {turma_val:<6}\n"
                     nome = matricula = turma = ano = None  # reseta para próximo aluno
 
-            # Caso o último aluno não tenha linha separadora, adiciona depois do loop
+            #caso o último aluno não tenha linha separadora, adiciona depois do loop
             if nome is not None and matricula is not None:
                 ano_val = ano if ano is not None else "?"
                 turma_val = turma if turma is not None else "?"

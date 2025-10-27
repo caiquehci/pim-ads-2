@@ -25,22 +25,48 @@ def tela_login():
         user = entry_user.get()
         password = entry_pass.get()
 
-        # Login básico só pelo domínio no usuário
-        if "@admin" in user:
-            tipo_usuario = "admin"
-        elif "@professor" in user:
-            tipo_usuario = "professor"
-        elif "@aluno" in user:
-            tipo_usuario = "aluno"
-        else:
-            messagebox.showerror("Erro", "Usuário inválido")
-            return
+        ##Antigo código deprecado de verificação de login por comparação de tring (sem validação)
+        # # Login básico só pelo domínio no usuário
+        # if "@admin" in user:
+        #     tipo_usuario = "admin"
+        # elif "@professor" in user:
+        #     tipo_usuario = "professor"
+        # elif "@aluno" in user:
+        #     tipo_usuario = "aluno"
+        # else:
+        #     messagebox.showerror("Erro", "Usuário inválido")
+        #     return
         
-        nome_usuario = user.split("@")[0]
+        # nome_usuario = user.split("@")[0]
 
-        messagebox.showinfo("Sucesso", f"Login ok! Tipo: {tipo_usuario}")
-        login_window.destroy()
-        iniciar_app(tipo_usuario, nome_usuario)
+        # messagebox.showinfo("Sucesso", f"Login ok! Tipo: {tipo_usuario}")
+        # login_window.destroy()
+        # iniciar_app(tipo_usuario, nome_usuario)
+
+        try:
+            with open('../usuarios.txt', 'r', encoding='utf-8') as arquivo:
+                for linha in arquivo:
+                    linha = linha.strip()
+                    if not linha:
+                        continue #se vazio → continue
+
+                    campos = linha.split('|')
+                    if len(campos) < 5:
+                        continue #se tiver erro de formatação → pule
+
+                    login_arq, senha_arq, tipo_arq, nome_arq, id_arq = campos
+
+                    if user == login_arq and password == senha_arq:
+                        tipo_usuario = tipo_arq
+                        nome_usuario = nome_arq
+                        login_window.destroy()
+                        iniciar_app(tipo_usuario, nome_usuario)
+                        return
+                
+                messagebox.showerror("Erro", "Usuário ou senha errados") #se erro → passa aqui
+        except FileNotFoundError:
+            messagebox.showerror("Erro", "Lista de usuários não encontrado")
+    
 
     frame_botoes = tk.Frame(login_window)
     frame_botoes.pack(side=tk.BOTTOM, pady=16)
@@ -98,10 +124,7 @@ def exportar_para_pdf(text_widget):
         messagebox.showwarning("Aviso", "Não há conteúdo para exportar.")
         return
 
-    caminho = filedialog.asksaveasfilename(
-        defaultextension=".pdf",
-        filetypes=[("Arquivos PDF", "*.pdf")]
-    )
+    caminho = filedialog.asksaveasfilename(defaultextension=".pdf", filetypes=[("Arquivos PDF", "*.pdf")])
 
     if caminho:
         try:
@@ -141,6 +164,8 @@ def criar_janela_admin(nome_usuario):
     label_boas_vindas = tk.Label(frame_botoes, text=f"Bem-vindo(a), {nome_usuario}!", font=("Arial", 12, "bold"))
     label_boas_vindas.pack(pady=(24, 24))
 
+
+
     #Botões empilhados verticalmente dentro do frame lateral
     botao_mostrar = tk.Button(frame_botoes, text="Mostrar alunos", command=mostrar_alunos_interface, width=16)
     botao_mostrar.pack(pady=8)
@@ -158,10 +183,16 @@ def criar_janela_admin(nome_usuario):
     botao_logout = tk.Button(frame_botoes, text="Logout", command=logout, width=16, bg="#5E0E0E", fg="white")
     botao_logout.pack(side=tk.BOTTOM, pady=(96, 8))
 
+
+
+
     #Área de texto ocupando o restante da janela, à direita
     #widget
-    text_area = scrolledtext.ScrolledText(janela_admin, width=90, height=32)
+    text_area = scrolledtext.ScrolledText(janela_admin, width=80, height=32)
     text_area.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(12, 24), pady=16)
+
+
+
 
     #Bind para detectar mudanças no text_area
     text_area.bind('<KeyRelease>', verificar_conteudo)

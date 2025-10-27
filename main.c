@@ -23,35 +23,29 @@ int proximo_id = 1; // ID do aluno
 //}
 
 //Função para criar admin padrão se não existir
-void criar_admin_padrao()
-{
+void criar_admin_padrao() {
     FILE *arquivo = fopen(ARQUIVO_USUARIOS, "r");
 
     //Se arquivo não existe ou está vazio, cria admin padrão
-    if (arquivo == NULL)
-    {
+    if (arquivo == NULL) {
         arquivo = fopen(ARQUIVO_USUARIOS, "w");
-        if (arquivo != NULL)
-        {
+        if (arquivo != NULL) {
             fprintf(arquivo, "admin@admin|admin123|admin|Administrador|0\n");
             fclose(arquivo);
             printf("Admin padrão criado!\n");
             printf("Login: admin@admin\n");
             printf("Senha: admin123\n\n");
         }
-    }
-    else
-    {
+
+    } else {
         fclose(arquivo);
     }
 }
 
 //Função para autenticar
-int autenticar_usuario(dados_usuario *u)
-{
+int autenticar_usuario(dados_usuario *u) {
     FILE *arquivo = fopen(ARQUIVO_USUARIOS, "r");
-    if (arquivo == NULL)
-    {
+    if (arquivo == NULL) {
         printf("Erro ao abrir arquivo de usuários!\n");
         return 0;
     }
@@ -60,13 +54,11 @@ int autenticar_usuario(dados_usuario *u)
     char login_arq[50], senha_arq[25], tipo_arq[15], nome_arq[50];
     int id_arq;
 
-    while (fgets(linha, sizeof(linha), arquivo))
-    {
+    while (fgets(linha, sizeof(linha), arquivo)) {
         //Formato: login|senha|tipo|nome|id
         sscanf(linha, "%[^|]|%[^|]|%[^|]|%[^|]|%d", login_arq, senha_arq, tipo_arq, nome_arq, &id_arq);
 
-        if (strcmp(u->login, login_arq) == 0 && strcmp(u->senha, senha_arq) == 0)
-        {
+        if (strcmp(u->login, login_arq) == 0 && strcmp(u->senha, senha_arq) == 0) {
             strcpy(u->tipo, tipo_arq);
             strcpy(u->nome, nome_arq);
             u->id = id_arq;
