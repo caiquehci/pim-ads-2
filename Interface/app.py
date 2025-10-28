@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import scrolledtext
 from tkinter import messagebox, filedialog
-from admin import abrir_relatorios, mostrar_alunos
+from admin import abrir_relatorios, mostrar_alunos, buscar_aluno_individual
 from professor import consultar_alunos, ver_notas, ver_faltas
 
 from reportlab.lib.pagesizes import A4
@@ -86,6 +86,10 @@ def iniciar_app(tipo_usuario, nome_usuario):
         criar_janela_admin(nome_usuario)
     elif tipo_usuario == "professor":
         criar_janela_prof(nome_usuario)
+    elif tipo_usuario == "aluno":
+        criar_janela_aluno(nome_usuario)
+    else:
+        messagebox.showerror("Erro", f"Tipo de usuário desconhecido: {tipo_usuario}")
 
 def logout():
     global janela_admin
@@ -180,7 +184,7 @@ def criar_janela_admin(nome_usuario):
     botao_limpar.pack(pady=8)
 
 
-    botao_logout = tk.Button(frame_botoes, text="Logout", command=logout, width=16, bg="#5E0E0E", fg="white")
+    botao_logout = tk.Button(frame_botoes, text="Sair", command=logout, width=16, bg="#5E0E0E", fg="white")
     botao_logout.pack(side=tk.BOTTOM, pady=(96, 8))
 
 
@@ -244,7 +248,7 @@ def criar_janela_prof(nome_usuario):
     botao_limpar = tk.Button(frame_botoes, text="Limpar filtro", command=limpar_texto_prof, width=16)
     botao_limpar.pack(pady=8)
 
-    botao_logout = tk.Button(frame_botoes, text="Logout", command=logout_prof, width=16, bg="#5E0E0E", fg="white")
+    botao_logout = tk.Button(frame_botoes, text="Sair", command=logout_prof, width=16, bg="#5E0E0E", fg="white")
     botao_logout.pack(pady=(24, 8))
     
 
@@ -252,6 +256,46 @@ def criar_janela_prof(nome_usuario):
     verificar_conteudo_prof()
 
     janela_prof.mainloop()
+
+def criar_janela_aluno(nome_usuario):
+    janela_aluno = tk.Tk()
+    janela_aluno.title(f"Boletim - {nome_usuario}")
+    janela_aluno.geometry("600x400")
+
+    frame_botoes = tk.Frame(janela_aluno)
+    frame_botoes.pack(side=tk.LEFT, padx=(24, 12), pady=16)
+
+    label_boas_vindas = tk.Label(frame_botoes, text=f"Bem-vindo(a), {nome_usuario}!", font=("Arial", 12, "bold"))
+    label_boas_vindas.pack(pady=(24, 24))
+
+    botao_exportar_pdf = tk.Button(frame_botoes, text="Exportar seu boletim", command=lambda: exportar_para_pdf(text_area), width=16)
+    botao_exportar_pdf.pack(pady=8)
+
+    def logout():
+        janela_aluno.destroy()
+        tela_login()
+
+
+    botao_logout = tk.Button(frame_botoes, text="Sair", command=logout, width=16, bg="#5E0E0E", fg="white")
+    botao_logout.pack(side=tk.BOTTOM, pady=(96, 8))    
+
+    text_area = scrolledtext.ScrolledText(janela_aluno, width=80, height=32)
+    text_area.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(12, 24), pady=16)
+
+    conteudo_aluno = buscar_aluno_individual(nome_usuario)
+    text_area.insert(tk.END, conteudo_aluno)
+
+
+
+
+    
+
+
+
+
+    #janela_aluno.mainloop()
+
+
 
 
 def limpar_texto_admin():
