@@ -4,10 +4,24 @@
 #define MAX_ALUNOS 100
 #define MAX_TURMAS 100
 #define MAX_PROFESSORES 100
+#define MAX_AULAS 100
 
 extern int num_turmas;
 extern int total_alunos;
 extern int proximo_id;
+
+typedef struct
+{
+    int id;
+    int ano;
+    char materia[20];
+    char turma[4];
+    char corpo[1000];
+} Aula;
+
+/* Variáveis globais de aulas */
+extern Aula aulas[MAX_AULAS];
+extern int total_aulas;
 
 typedef struct
 {

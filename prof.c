@@ -92,8 +92,7 @@ void atribuir_faltas(Aluno *aluno, int num_alunos) {
 
 }
 
-void calcular_situacao(Aluno *aluno)
-{
+void calcular_situacao(Aluno *aluno) {
     float soma_notas = 0.0;
     int num_notas = 4; // ou quantas notas usa
 
@@ -113,4 +112,43 @@ void calcular_situacao(Aluno *aluno)
     {
         strcpy(aluno->situacao, "aprovado");
     }
+}
+
+void cadastrar_aulas(Aula *aula, int num_aulas)
+{
+    if (num_aulas >= MAX_AULAS)
+    {
+        printf("Limite máximo de aulas atingido.\n");
+        return;
+    }
+
+    Aula nova_aula;
+
+    printf("\n=== Cadastro de Aula ===\n");
+
+    gerar_id_aula(&nova_aula.id);
+
+    printf("Ano (ex: 2024): ");
+    scanf("%d", &nova_aula.ano);
+    getchar();
+
+    printf("Matéria: ");
+    fgets(nova_aula.materia, sizeof(nova_aula.materia), stdin);
+    nova_aula.materia[strcspn(nova_aula.materia, "\n")] = '\0';
+
+    printf("Turma (ex: A, B, etc): ");
+    fgets(nova_aula.turma, sizeof(nova_aula.turma), stdin);
+    nova_aula.turma[strcspn(nova_aula.turma, "\n")] = '\0';
+
+    printf("Conteúdo / corpo da aula (até 1000 caracteres):\n");
+    fgets(nova_aula.corpo, sizeof(nova_aula.corpo), stdin);
+    nova_aula.corpo[strcspn(nova_aula.corpo, "\n")] = '\0';
+
+    // Adiciona no array recebido
+    aula[num_aulas] = nova_aula;
+    total_aulas++; // incrementa o global
+
+    salvar_aulas_em_arquivo();
+
+    printf("\nAula cadastrada com sucesso! (ID: %d)\n", nova_aula.id);
 }

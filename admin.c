@@ -14,6 +14,9 @@ int num_turmas = 0;
 Professor professores[MAX_PROFESSORES];
 int total_professores = 0;
 
+Aula aulas[MAX_AULAS];
+int total_aulas = 0;
+
 // Turmas :::::::::::::::::::::::::::::::::::::::::::::::
 //
 // Cadastrar turma
@@ -128,6 +131,26 @@ void salvar_turmas_em_arquivo(void) {
             }
 
         fclose(fp);
+}
+
+void salvar_aulas_em_arquivo(void) {
+    FILE *fp = fopen("aulas.txt", "a");
+    if (!fp) {
+        perror("Erro ao abrir arquivo 'aulas.txt' para salvar");
+        return;
+    }
+
+    // grava só a última aula (índice total_aulas - 1)
+    int i = total_aulas - 1;
+    fprintf(fp, "ID: %d\n", aulas[i].id);
+    fprintf(fp, "Ano: %d\n", aulas[i].ano);
+    fprintf(fp, "Matéria: %s\n", aulas[i].materia);
+    fprintf(fp, "Turma: %s\n", aulas[i].turma);
+    fprintf(fp, "Corpo: %s\n", aulas[i].corpo);
+    fprintf(fp, "--------------------------\n");
+
+    fclose(fp);
+    printf("Aula adicionada ao arquivo 'aulas.txt'.\n");
 }
 
 //pra usar no começo da main
@@ -365,6 +388,35 @@ void gerar_id_aluno(int *id)
     freopen("contador_id.txt", "w", f); // reabre o arquivo em modo de escrita limpa
     fprintf(f, "%d", numero + 1);
     fflush(f);
+    fclose(f);
+}
+
+void gerar_id_aula(int *id) {
+    FILE *f = fopen("contador_aula.txt", "r+");
+    int numero;
+
+    if (f == NULL){
+        // Se o arquivo não existir, cria e inicia em 1
+        f = fopen("contador_aula.txt", "w+");
+        if (f == NULL)
+        {
+            fprintf(stderr, "Erro ao criar contador_aula.txt\n");
+            return;
+        }
+        numero = 1;
+    }
+    else
+    {
+        // Lê o último número salvo
+        if (fscanf(f, "%d", &numero) != 1)
+            numero = 1;
+    }
+
+    *id = numero; // usa o número atual
+
+    // Atualiza o contador para o próximo ID
+    freopen("contador_aula.txt", "w", f);
+    fprintf(f, "%d", numero + 1);
     fclose(f);
 }
 

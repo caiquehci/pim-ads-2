@@ -57,7 +57,6 @@ void menu_admin() {
                 printf("1 - Cadastrar novo aluno\n");
                 printf("2 - Alterar status do aluno\n");
                 printf("3 - Buscar aluno\n");
-                printf("4 - Boletins\n");
                 printf("0 - Voltar ao menu anterior\n");
                 printf("Escolha: ");
                 scanf("%d", &op_aluno);
@@ -265,6 +264,7 @@ void menu_professor() {
         printf("Escolha uma das opções abaixo para continuar:\n");
         printf("1 - Atribuir notas a um aluno\n");
         printf("2 - Incluir faltas\n");
+        printf("3 - Cadastrar aula\n");
         printf("0 - Sair\n");
         printf("Sua opção:\n");
         scanf("%d",&opcao);
@@ -276,6 +276,9 @@ void menu_professor() {
             break;
         case 2:
             atribuir_faltas(alunos, total_alunos);
+            break;
+        case 3:
+            cadastrar_aulas(aulas, total_aulas);
             break;
         case 0:
             printf("Voltando ao menu anterior...\n");
