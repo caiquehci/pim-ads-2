@@ -1,53 +1,75 @@
-# pim-ads-2
+# Sistema de Gestão Acadêmico Integrado (PIM ADS 2)
 
-# Sistema Acadêmico Colaborativo
+## 🏅 Desafio
 
-Projeto multidisciplinar (PIM II) do curso de Análise e Desenvolvimento de Sistemas — UNIP  
-**Tema:** Sistema Acadêmico Colaborativo (sem Inteligência Artificial)
+O projeto visa desenvolver um sistema integrado de gestão escolar para otimizar o cadastro, controle e automação dos processos acadêmicos, como administração de alunos, professores, turmas e disciplinas, atendendo às necessidades da escola e promovendo maior eficiência e organização administrativa.
+
+## 🏅 Solução
+
+Aplicação modular construída nas linguagens C (para módulos de baixo nível e manipulação dos dados) e Python (para interface gráfica e geração de relatórios), utilizando a metodologia Kanban para gerenciamento ágil individual das tarefas, permitindo automação e controle eficiente das rotinas escolares.
+
+## 📋 Backlog do Produto
+
+O controle do desenvolvimento foi realizado mediante quadro Kanban, que organizou as tarefas em estados diversos como A Fazer, Em Progresso e Concluído. Algumas tarefas exemplares:
+
+| Prioridade | Tarefa                              | Status      | Observações                                                       |
+|------------|-----------------------------------|-------------|------------------------------------------------------------------|
+| Alta       | Cadastro e gerenciamento de professores | Concluído   | Sistema permite cadastro, edição e exclusão de professores, com validação de dados. Inclui interface amigável em Tkinter. |
+| Alta       | Cadastro e gerenciamento de alunos       | Concluído   | Funcionalidade completa para registro e atualização de dados acadêmicos dos alunos, com controles para turmas e disciplinas. |
+| Alta       | Controle e organização de turmas          | Concluído   | Gestão eficiente das turmas, alocação de alunos e horários integrada no sistema.                               |
+| Alta       | Emissão de boletins acadêmicos             | Concluído   | Geração automática de boletins individuais em PDF, baseado nos dados lançados para cada aluno.                |
+| Alta       | Interface gráfica e usabilidade             | Concluído   | GUI desenvolvida em Python com Tkinter, focando em facilidade de uso e navegação intuitiva.                   |
+| Alta       | Relatórios PDF e documentação técnica      | Concluído   | Uso da biblioteca ReportLab para geração dos relatórios, com documentação técnica detalhada disponível.      |
 
 
-## Objetivo
+## 🗂️ Planejamento e Evolução - Kanban
 
-Desenvolver um sistema acadêmico integrado capaz de gerenciar turmas, alunos, aulas e atividades, promovendo colaboração entre usuários e integrando práticas de engenharia de software ágeis e documentação completa.
+As etapas foram organizadas e acompanhadas visualmente pelo método Kanban, proporcionando flexibilidade e controle do fluxo contínuo das atividades de desenvolvimento.
 
-## Funcionalidades Principais
+## ⚙️ Tecnologias Utilizadas
 
-- Cadastro e gerenciamento de turmas, alunos, professores e atividades
-- Funcionalidades colaborativas (ex: compartilhamento de arquivos, mensagens entre usuários)
-- Integração de módulos em C e Python
-- Funcionamento multiusuário (local e via rede)
+- C: programação estruturada para manipulação de dados e lógica do sistema
+- Python: interface gráfica com Tkinter, geração e exportação de relatórios PDF
+- ReportLab para geração de PDFs
+- Git e GitHub para versionamento e controle do projeto
+- Metodologia ágil Kanban para planejamento e acompanhamento
 
-## Entregáveis
+## 📂 Estrutura do Projeto
 
-- Código-fonte completo e comentado (em C e Python)
-- Documentação do projeto conforme normas ABNT
-- Diagramas UML (casos de uso, classes, sequência)
-- Diagrama da rede (topologia, endereçamento IP, DHCP)
-- Manual do sistema
-- Plano de testes e homologação
-- Apresentação em PowerPoint
-- Demonstração do sistema funcionando com pelo menos dois usuários simultâneos
+/pim-ads-2
+│
+├── /C # Código fonte em C - manipulação, lógica, leitura e escrita de arquivos
+├── /Interface # Interface GUI, processamento e visualização de relatórios
+├── /docs # Documentação UML, diagramas e relatórios técnicos
+└── README.md # Documento principal do projeto
 
-## Requisitos por Disciplina
+## 🚀 Como executar, usar e testar
 
-- **C:** Uso de estruturas de decisão, funções externas à main, laços de repetição, leitura/gravação em arquivos, structs, ponteiros e alocação dinâmica de memória.
-- **Python:** Estruturas de decisão/repetição, integração de dados com C, construção de interfaces eficientes.
-- **Engenharia de Software:** Aplicação de Scrum, levantamento de requisitos, criação de diagramas de fluxo de dados e documentação das etapas.
-- **Análise/Projeto de Sistemas:** Especificação dos componentes do sistema, justificativa das escolhas técnicas, diagramas UML completos.
-- **Redes:** Desenho do layout da rede, configuração (endereços IP, DHCP, topologia), simulação ambiente multiusuário.
-- **Educação Ambiental:** Proposição de pelo menos duas práticas de sustentabilidade (exemplo: eliminação de papel).
-- **Relações Étnico-Raciais:** Proposição de ações para promoção de igualdade e inclusão no sistema.
+1. Clone o repositório:
+git clone https://github.com/caiquehci/pim-ads-2.git
+cd pim-ads-2
 
-## Instruções Gerais
+2. Compile o código C (utilizando GCC ou MinGW):
+gcc main.c admin.c menu.c prof.c -o programa
 
-- Trabalho em grupo (até 6 integrantes).
-- Realização de reuniões periódicas com orientação docente e preenchimento das fichas de acompanhamento.
-- Todo material deve ser original, sujeito à verificação antiplágio institucional.
-- Evitar explicação excessiva de teoria; focar nos artefatos práticos solicitados.
-- Detalhar no projeto como cada disciplina contribui e as funções de cada integrante.
-- Entrega via sistema acadêmico e uma via impressa ao coordenador, dentro do prazo estabelecido.
+3. Explore as funcionalidades como quiser. Por default o sistema cria um user admin, com todas as features liberadas. Cabe ao user admin criar novos cadastros.
 
----
+3.1 As criações de arquivo ocorrem apenas através do código em C (seja pelo terminal ou pelo programa.exe)
 
-> Dúvidas, exemplos detalhados ou sugestões para organização dos artefatos devem ser tratados na área de Issues deste repositório.
+4. Execute a interface em Python 3+ para explorar as features de visualização, com o mesmo login anterior:
+cd interface
+python app.py
 
+5. Utilize os scripts de teste e os casos simulados para conferir o funcionamento e a integridade dos dados.
+
+## 📚 Documentação
+
+UML, diagramas de uso, classes e sequência, além de relatórios detalhados encontram-se na pasta `/docs` do repositório.
+
+## 👥 Equipe
+
+Projeto desenvolvido individualmente por:
+
+| Nome Completo                            | Papel                | GitHub                                         | LinkedIn                                            |
+|-----------------------------------------|----------------------|------------------------------------------------|-----------------------------------------------------|
+| Carlos Henrique Machado Castanheira Jr. | Desenvolvedor único   | [github.com/caiquehci](https://github.com/caiquehci) | [linkedin.com/in/carloshenrmcj](https://www.linkedin.com/in/carloshenrmcj/) |
