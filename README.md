@@ -22,9 +22,12 @@ O controle do desenvolvimento foi realizado mediante quadro Kanban, que organizo
 | Alta       | Relatórios PDF e documentação técnica      | Concluído   | Uso da biblioteca ReportLab para geração dos relatórios, com documentação técnica detalhada disponível.      |
 
 
+
 ## 🗂️ Planejamento e Evolução - Kanban
 
 As etapas foram organizadas e acompanhadas visualmente pelo método Kanban, proporcionando flexibilidade e controle do fluxo contínuo das atividades de desenvolvimento.
+
+
 
 ## ⚙️ Tecnologias Utilizadas
 
@@ -34,14 +37,18 @@ As etapas foram organizadas e acompanhadas visualmente pelo método Kanban, prop
 - Git e GitHub para versionamento e controle do projeto
 - Metodologia ágil Kanban para planejamento e acompanhamento
 
-## 📂 Estrutura do Projeto
 
+
+## 📂 Estrutura do Projeto
+```
 /pim-ads-2
 │
 ├── /C # Código fonte em C - manipulação, lógica, leitura e escrita de arquivos
 ├── /Interface # Interface GUI, processamento e visualização de relatórios
 ├── /docs # Documentação UML, diagramas e relatórios técnicos
 └── README.md # Documento principal do projeto
+```
+
 
 ## 🚀 Como executar, usar e testar
 
@@ -62,9 +69,14 @@ python app.py
 
 5. Utilize os scripts de teste e os casos simulados para conferir o funcionamento e a integridade dos dados.
 
+
+
 ## 📚 Documentação
 
-UML, diagramas de uso, classes e sequência, além de relatórios detalhados encontram-se na pasta `/docs` do repositório.
+- Diagramas UML, relatórios e documentos técnicos estão disponíveis na pasta `/docs`.
+- [Manual de Uso - Vídeo explicativo](https://youtu.be/EjsPrxFAeAI) – Apresenta o funcionamento completo do sistema e instruções para uso.
+
+
 
 ## 👥 Equipe
 
